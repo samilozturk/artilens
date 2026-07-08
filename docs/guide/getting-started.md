@@ -5,8 +5,18 @@
 1. Add the public GitHub marketplace and install the plugin from Claude Code:
 
    ```text
-   /plugin marketplace add samilozturk/artilens
+   /plugin marketplace add https://github.com/samilozturk/artilens.git
    /plugin install artilens@artilens-marketplace
+   ```
+
+   Current Claude Code versions also accept the GitHub shorthand
+   `samilozturk/artilens`. Do not use `samilozturk/artilens/plugin` as the
+   marketplace source; `plugin` is the internal plugin directory referenced by
+   the marketplace manifest, not part of the source URL. For a sparse monorepo
+   checkout, use:
+
+   ```text
+   /plugin marketplace add --sparse .claude-plugin plugin -- samilozturk/artilens
    ```
 
 2. Use a skill when the corresponding workflow appears:

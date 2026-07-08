@@ -21,12 +21,21 @@ Artifacts.
 From Claude Code, add the public GitHub marketplace and install the plugin:
 
 ```text
-/plugin marketplace add samilozturk/artilens
+/plugin marketplace add https://github.com/samilozturk/artilens.git
 /plugin install artilens@artilens-marketplace
 ```
 
 The plugin ships its own bundled CLI and calls it through the installed plugin
 directory. You do not need to install an `artilens` npm package.
+
+`samilozturk/artilens` also works as GitHub shorthand on current Claude Code
+versions. Do not append `/plugin` to the marketplace source; the marketplace is
+declared at the repo root and points at `./plugin` internally. For a sparse
+monorepo checkout, use:
+
+```text
+/plugin marketplace add --sparse .claude-plugin plugin -- samilozturk/artilens
+```
 
 For local plugin development from a checkout, use:
 
