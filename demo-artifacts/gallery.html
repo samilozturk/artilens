@@ -1,0 +1,87 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="All v1 components rendered from deterministic demo data."><title>ArtiLens Kit Gallery</title><style> :root{--color-primary:#1a4d8f;--color-accent:#f59e0b;--color-surface:#f8fafc;--color-danger:#dc2626;--color-success:#16a34a;--color-ink:#172033;--color-muted:#64748b;--color-line:#d7dee8;--radius:6px;--space:8px;--font-body:system-ui,-apple-system,Segoe UI,sans-serif;--font-code:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--color-surface);color:var(--color-ink);font-family:var(--font-body);font-size:14px;line-height:1.45}
+a{color:var(--color-primary)}
+main{max-width:1180px;margin:0 auto;padding:24px}
+.al-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;border-bottom:1px solid var(--color-line);padding-bottom:14px}
+.al-title{margin:0;font-size:28px;line-height:1.15;letter-spacing:0}
+.al-subtitle{margin:6px 0 0;color:var(--color-muted)}
+.al-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.al-panel{background:#fff;border:1px solid var(--color-line);border-radius:var(--radius);padding:14px}
+.al-kpi{font-size:26px;font-weight:700}
+.al-muted{color:var(--color-muted)}
+.al-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--color-line);border-radius:999px;padding:2px 8px;background:#fff;font-size:12px}
+.al-danger{color:var(--color-danger)}.al-success{color:var(--color-success)}.al-warning{color:#a16207}
+table{width:100%;border-collapse:collapse;background:#fff}
+th,td{border-bottom:1px solid var(--color-line);padding:8px;text-align:left;vertical-align:top}
+th{font-size:12px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.04em}
+pre,code{font-family:var(--font-code)}
+pre{overflow:auto;background:#0f172a;color:#e2e8f0;padding:12px;border-radius:var(--radius)}
+button{font:inherit;border:1px solid var(--color-line);background:#fff;border-radius:var(--radius);padding:7px 10px;cursor:pointer}
+button:hover{border-color:var(--color-primary)}
+@media (max-width:720px){main{padding:14px}.al-header{display:block}.al-title{font-size:22px}table{font-size:12px}} :root{--color-primary:#1a4d8f;--color-accent:#f59e0b;--color-surface:#f8fafc;--color-danger:#dc2626;--color-success:#16a34a;--font-body:system-ui,-apple-system,Segoe UI,sans-serif;--font-code:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--space:8px;--radius:6px;} h2{margin:0 0 10px;font-size:17px}.al-filter{width:100%;margin-bottom:8px;padding:8px;border:1px solid var(--color-line);border-radius:var(--radius)}
+.al-progress{height:9px;background:#e2e8f0;border-radius:99px;overflow:hidden}.al-progress span{display:block;height:100%;background:var(--color-success)}
+.al-checklist{list-style:none;padding:0;margin:0}.al-checklist li{padding:5px 0}.status-blocked{color:var(--color-danger)}.status-skipped{color:#a16207}
+.al-code-line{display:block;white-space:pre}.al-line-no{display:inline-block;width:34px;color:#94a3b8;user-select:none}.tok{color:#93c5fd}
+.al-diff td:first-child{width:30px;text-align:center}.diff-add{background:#ecfdf5}.diff-del{background:#fef2f2}.diff-ctx{background:#fff}
+.al-timeline{border-left:2px solid var(--color-line);padding-left:12px}.al-timeline article{position:relative;margin:0 0 12px}.al-timeline article:before{content:"";position:absolute;left:-18px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--color-primary)}
+.al-compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.al-compare article{border:1px solid var(--color-line);border-radius:var(--radius);padding:10px}.al-compare .recommended{border-color:var(--color-success);background:#f0fdf4}
+.al-kanban{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.al-column{background:#f8fafc;border:1px solid var(--color-line);border-radius:var(--radius);padding:8px;min-height:120px}.al-card{background:#fff;border:1px solid var(--color-line);border-radius:var(--radius);padding:8px;margin:8px 0;cursor:grab}
+.al-copy textarea{width:100%;min-height:70px;margin-bottom:8px;border:1px solid var(--color-line);border-radius:var(--radius);padding:8px} </style></head><body><main data-artilens-artifact="kit-gallery"><div class="al-header"><div><h1 class="al-title">ArtiLens Kit Gallery</h1><p class="al-subtitle">All v1 components rendered from deterministic demo data.</p></div><span class="al-pill">ArtiLens</span></div><section class="al-panel" data-artilens="charts" data-artilens-state="charts"><h2>Charts</h2><svg role="img" viewBox="0 0 520 220" width="100%" height="220" data-artilens="chart bar"><g><rect x="8" y="33.79999999999998" width="162.66666666666666" height="160.20000000000002" rx="3" fill="#1a4d8f"><title>Guard: 9</title></rect><text x="89.33333333333333" y="212" text-anchor="middle" font-size="10" fill="#64748b">Guard</text></g><g><rect x="178.66666666666666" y="16" width="162.66666666666666" height="178" rx="3" fill="#f59e0b"><title>Kit: 10</title></rect><text x="260" y="212" text-anchor="middle" font-size="10" fill="#64748b">Kit</text></g><g><rect x="349.3333333333333" y="69.4" width="162.66666666666666" height="124.6" rx="3" fill="#16a34a"><title>Lens: 7</title></rect><text x="430.66666666666663" y="212" text-anchor="middle" font-size="10" fill="#64748b">Lens</text></g></svg></section><section class="al-panel" data-artilens="sortable-table" data-artilens-state="table"><h2>Table</h2><input class="al-filter" data-table-filter placeholder="Filter"><table data-sortable><thead><tr><th><button data-sort-key="Component">Component</button></th><th><button data-sort-key="Budget">Budget</button></th><th><button data-sort-key="Interactive">Interactive</button></th></tr></thead><tbody><tr><td>theme</td><td>8 KB</td><td>no</td></tr><tr><td>charts</td><td>8 KB</td><td>yes</td></tr><tr><td>sortable-table</td><td>8 KB</td><td>yes</td></tr><tr><td>checklist</td><td>8 KB</td><td>yes</td></tr><tr><td>code-block</td><td>8 KB</td><td>yes</td></tr><tr><td>diff-viewer</td><td>12 KB</td><td>yes</td></tr><tr><td>timeline</td><td>8 KB</td><td>yes</td></tr><tr><td>compare-grid</td><td>8 KB</td><td>yes</td></tr><tr><td>kanban</td><td>12 KB</td><td>yes</td></tr><tr><td>copy-as-prompt</td><td>8 KB</td><td>yes</td></tr></tbody></table></section><section class="al-panel" data-artilens="checklist" data-artilens-state="checklist"><h2>Checklist</h2><div class="al-progress"><span style="width:100%"></span></div><p class="al-muted">100% complete</p><ul class="al-checklist"><li><label><input type="checkbox" data-change-op="check" data-target="task-0" checked><span class="status-done">theme demo</span></label></li><li><label><input type="checkbox" data-change-op="check" data-target="task-1" checked><span class="status-done">charts demo</span></label></li><li><label><input type="checkbox" data-change-op="check" data-target="task-2" checked><span class="status-done">sortable-table demo</span></label></li><li><label><input type="checkbox" data-change-op="check" data-target="task-3" checked><span class="status-done">checklist demo</span></label></li><li><label><input type="checkbox" data-change-op="check" data-target="task-4" checked><span class="status-done">code-block demo</span></label></li><li><label><input type="checkbox" data-change-op="check" data-target="task-5" checked><span class="status-done">diff-viewer demo</span></label></li><li><label><input type="checkbox" data-change-op="check" data-target="task-6" checked><span class="status-done">timeline demo</span></label></li><li><label><input type="checkbox" data-change-op="check" data-target="task-7" checked><span class="status-done">compare-grid demo</span></label></li><li><label><input type="checkbox" data-change-op="check" data-target="task-8" checked><span class="status-done">kanban demo</span></label></li><li><label><input type="checkbox" data-change-op="check" data-target="task-9" checked><span class="status-done">copy-as-prompt demo</span></label></li></ul></section><section class="al-panel" data-artilens="code-block"><h2>Code</h2><button data-copy-code>Copy</button><pre data-artilens-state="code"><code><span class="al-code-line"><span class="al-line-no">1</span>{</span>
+<span class="al-code-line"><span class="al-line-no">2</span>  &quot;artilens&quot;: 1,</span>
+<span class="al-code-line"><span class="al-line-no">3</span>  &quot;componentCount&quot;: 10</span>
+<span class="al-code-line"><span class="al-line-no">4</span>}</span></code></pre></section><section class="al-panel" data-artilens="diff-viewer" data-artilens-state="diff"><h2>Diff</h2><details open><summary>example.ts</summary><table class="al-diff"><tbody><tr class="diff-del"><td>-</td><td><code>const page = writeHtml();</code></td><td><label><input type="checkbox" data-change-op="select" data-target="example.ts"> note</label></td></tr><tr class="diff-add"><td>+</td><td><code>const page = buildKitPage();</code></td><td><label><input type="checkbox" data-change-op="select" data-target="example.ts"> note</label></td></tr></tbody></table></details></section><section class="al-panel" data-artilens="timeline" data-artilens-state="timeline"><h2>Timeline</h2><div class="al-timeline"><article data-type="guard"><time>Phase 1</time><strong>guard</strong><p>Validate publish safety</p></article><article data-type="kit"><time>Phase 2</time><strong>kit</strong><p>Compose reusable components</p></article></div></section><section class="al-panel" data-artilens="compare-grid" data-artilens-state="compare"><h2>Compare</h2><div class="al-compare"><article class=""><h3>Write HTML</h3><ul><li>More output tokens</li><li>Harder to test</li></ul><label><input type="radio" name="compare-choice" data-change-op="select" data-target="Write HTML"> choose</label></article><article class="recommended"><h3>Compose Kit</h3><span class="al-pill">recommended</span><ul><li>Reusable</li><li>Guard-clean</li></ul><label><input type="radio" name="compare-choice" data-change-op="select" data-target="Compose Kit"> choose</label></article></div></section><section class="al-panel" data-artilens="kanban" data-artilens-state="kanban"><h2>Board</h2><div class="al-kanban"><div class="al-column" data-column="now"><h3>Now</h3><article class="al-card" draggable="true" data-card="guard" data-change-op="move"><strong>Guard</strong><p>Publish checks</p></article></div><div class="al-column" data-column="next"><h3>Next</h3><article class="al-card" draggable="true" data-card="lens" data-change-op="move"><strong>Lens</strong><p>Context dashboard</p></article></div></div></section><section class="al-panel al-copy" data-artilens="copy-as-prompt"><h2>Copy as prompt</h2><textarea data-artilens-note placeholder="Optional note"></textarea><button data-copy-as-prompt>Copy state</button><output data-copy-status></output><script type="application/json" data-artilens-meta>{
+  "artifact": "kit-gallery",
+  "url": null
+}</script></section></main>
+<script>
+(() => {
+  document.querySelectorAll('[data-sortable]').forEach(table => {
+    const filter = table.closest('section')?.querySelector('[data-table-filter]');
+    filter?.addEventListener('input', () => {
+      const q = filter.value.toLowerCase();
+      table.querySelectorAll('tbody tr').forEach(row => row.hidden = !row.textContent.toLowerCase().includes(q));
+    });
+    table.querySelectorAll('th button').forEach((button, index) => button.addEventListener('click', () => {
+      const tbody = table.querySelector('tbody');
+      const dir = button.getAttribute('data-sort-dir') === 'asc' ? -1 : 1;
+      button.setAttribute('data-sort-dir', dir === 1 ? 'asc' : 'desc');
+      [...tbody.querySelectorAll('tr')].sort((a,b) => {
+        const x = a.children[index].textContent.trim(), y = b.children[index].textContent.trim();
+        const nx = parseFloat(x.replace(/[,%\s]/g,'')), ny = parseFloat(y.replace(/[,%\s]/g,''));
+        const numeric = x !== '' && y !== '' && !isNaN(nx) && !isNaN(ny);
+        return (numeric ? nx - ny : x.localeCompare(y)) * dir;
+      }).forEach(row => tbody.appendChild(row));
+    }));
+  });
+  document.querySelectorAll('[data-copy-code]').forEach(button => button.addEventListener('click', async () => {
+    const code = button.parentElement.querySelector('code').innerText.replace(/^\s*\d+\s?/gm, '');
+    await navigator.clipboard.writeText(code);
+    button.textContent = 'Copied';
+  }));
+  let drag;
+  document.querySelectorAll('.al-card').forEach(card => {
+    card.addEventListener('dragstart', () => drag = card);
+    card.addEventListener('dragend', () => drag = null);
+  });
+  document.querySelectorAll('.al-column').forEach(column => {
+    column.addEventListener('dragover', event => event.preventDefault());
+    column.addEventListener('drop', () => { if (drag) column.appendChild(drag); });
+  });
+  document.querySelectorAll('[data-copy-as-prompt]').forEach(button => button.addEventListener('click', async () => {
+    const meta = JSON.parse(document.querySelector('[data-artilens-meta]')?.textContent || '{}');
+    const state = {};
+    document.querySelectorAll('[data-artilens-state]').forEach((node, index) => {
+      state[node.getAttribute('data-artilens-state') || index] = {
+        text: node.innerText.slice(0, 500),
+        checked: [...node.querySelectorAll('input[type=checkbox],input[type=radio]')].filter(i => i.checked).map(i => i.getAttribute('data-target') || i.value),
+        cards: [...node.querySelectorAll('[data-card]')].map(card => ({ id: card.getAttribute('data-card'), column: card.closest('[data-column]')?.getAttribute('data-column') }))
+      };
+    });
+    const changes = [...document.querySelectorAll('[data-change-op]')].map(node => ({ op: node.getAttribute('data-change-op'), target: node.getAttribute('data-target') || node.getAttribute('data-card'), value: node.checked ?? node.closest('[data-column]')?.getAttribute('data-column') })).filter(item => item.target);
+    const payload = { artilens: 1, artifact: meta.artifact, url: meta.url, captured_at: new Date().toISOString(), state, changes, note: document.querySelector('[data-artilens-note]')?.value || '' };
+    await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+    document.querySelector('[data-copy-status]').textContent = 'Copied protocol v1 JSON';
+  }));
+})();</script>
+</body></html>

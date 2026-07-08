@@ -1,0 +1,290 @@
+<title>ArtiLens · Context Lens</title>
+<style>
+  :root{
+    --bg:#0e1217; --grid:#11161d; --panel:#151b23; --panel-2:#1a212b;
+    --line:#232c38; --line-2:#2d3846;
+    --ink:#e9eef4; --ink-2:#9aa7b6; --ink-3:#697585;
+    --accent:#ff7a52; --accent-2:#ff9169; --accent-dim:rgba(255,122,82,.14);
+    --opus:#6377ee; --sonnet:#25a066; --fable:#c98812; --haiku:#1c95ad;
+    --good:#33b174; --warn:#d9a521; --crit:#e5604d;
+    --c-sys:#8a6fe0; --c-tools:#3d84c4; --c-mem:#d98c2b; --c-skills:#2fae6b;
+    --radius:14px;
+    --mono:ui-monospace,"Cascadia Code","SF Mono","Segoe UI Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f6f7f5; --grid:#eef0ec; --panel:#ffffff; --panel-2:#f4f6f3;
+      --line:#e4e7e2; --line-2:#d5d9d3; --ink:#161b21; --ink-2:#586472; --ink-3:#8b95a2;
+      --accent:#e5552a; --accent-2:#e5552a; --accent-dim:rgba(229,85,42,.1);
+      --opus:#5b6ee8; --sonnet:#1f9e6a; --fable:#b57d10; --haiku:#1897b2;
+      --c-sys:#7a5ad0; --c-tools:#2f6fb0; --c-mem:#bf7815; --c-skills:#1f9e6a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1217; --grid:#11161d; --panel:#151b23; --panel-2:#1a212b; --line:#232c38; --line-2:#2d3846;
+    --ink:#e9eef4; --ink-2:#9aa7b6; --ink-3:#697585; --accent:#ff7a52; --accent-2:#ff9169; --accent-dim:rgba(255,122,82,.14);
+    --opus:#6377ee; --sonnet:#25a066; --fable:#c98812; --haiku:#1c95ad;
+    --c-sys:#8a6fe0; --c-tools:#3d84c4; --c-mem:#d98c2b; --c-skills:#2fae6b;
+  }
+  :root[data-theme="light"]{
+    --bg:#f6f7f5; --grid:#eef0ec; --panel:#ffffff; --panel-2:#f4f6f3; --line:#e4e7e2; --line-2:#d5d9d3;
+    --ink:#161b21; --ink-2:#586472; --ink-3:#8b95a2; --accent:#e5552a; --accent-2:#e5552a; --accent-dim:rgba(229,85,42,.1);
+    --opus:#5b6ee8; --sonnet:#1f9e6a; --fable:#b57d10; --haiku:#1897b2;
+    --c-sys:#7a5ad0; --c-tools:#2f6fb0; --c-mem:#bf7815; --c-skills:#1f9e6a;
+  }
+  *{box-sizing:border-box} body{margin:0}
+  .wrap{font-family:var(--sans); color:var(--ink); background:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:44px 44px; min-height:100vh; padding:28px 20px 56px; line-height:1.5; -webkit-font-smoothing:antialiased}
+  .page{max-width:1060px; margin:0 auto}
+  .mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+  .top{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px}
+  .brand{display:flex; align-items:center; gap:12px}
+  .mark{width:34px; height:34px; flex:0 0 auto}
+  .brand h1{font-size:15px; margin:0; letter-spacing:.02em; font-weight:650}
+  .brand .sub{font-family:var(--mono); font-size:11px; color:var(--ink-3); letter-spacing:.04em}
+  .crumbs{display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:var(--mono); font-size:11.5px; color:var(--ink-2)}
+  .chip{display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border:1px solid var(--line); border-radius:999px; background:var(--panel)}
+  .chip .dot{width:7px; height:7px; border-radius:50%}
+  .sep{color:var(--ink-3)}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin:0 0 6px}
+  .lede{font-size:26px; font-weight:660; letter-spacing:-.02em; margin:0 0 4px; text-wrap:balance}
+  .lede-sub{color:var(--ink-2); font-size:13.5px; margin:0 0 24px; max-width:64ch}
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-top:12px}
+  .panel h2{font-size:12px; font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--ink-2); margin:0 0 2px; display:flex; align-items:center; gap:8px}
+  .panel h2 .tag{margin-left:auto; font-size:10px; color:var(--ink-3); letter-spacing:.02em; text-transform:none}
+  .panel .note{font-size:12px; color:var(--ink-3); margin:0 0 16px}
+
+  /* verdict hero */
+  .verdict{display:grid; grid-template-columns:auto 1fr; gap:22px; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px}
+  .verdict::before{content:""; position:absolute}
+  .gaugewrap{position:relative; width:132px; height:132px}
+  .gaugewrap .lbl{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center}
+  .gaugewrap .lbl .num{font-family:var(--mono); font-size:34px; font-weight:600; line-height:1}
+  .gaugewrap .lbl .cap{font-family:var(--mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin-top:3px}
+  .verdict .body{min-width:0}
+  .pill{display:inline-flex; align-items:center; gap:7px; font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; padding:5px 11px; border-radius:999px}
+  .pill.compact{background:rgba(217,165,33,.16); color:var(--warn); border:1px solid rgba(217,165,33,.35)}
+  .verdict h3{font-size:19px; margin:12px 0 6px; letter-spacing:-.01em}
+  .verdict p{margin:0; color:var(--ink-2); font-size:13.5px; max-width:60ch}
+  .verdict .metrics{display:flex; gap:26px; margin-top:16px; flex-wrap:wrap}
+  .verdict .metrics .m{display:flex; flex-direction:column}
+  .verdict .metrics .m .mv{font-family:var(--mono); font-size:18px; font-weight:600}
+  .verdict .metrics .m .mk{font-size:10.5px; color:var(--ink-3); font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase; margin-top:2px}
+
+  /* grid + breakdown split */
+  .split{display:grid; grid-template-columns:1.05fr .95fr; gap:12px; margin-top:12px}
+  .grid10{display:grid; grid-template-columns:repeat(10,1fr); gap:5px; margin-bottom:16px}
+  .cell{aspect-ratio:1; border-radius:3px; background:var(--panel-2); border:1px solid var(--line)}
+  .cell.f{border-color:transparent}
+  .glegend{display:flex; flex-direction:column; gap:9px}
+  .glegend .li{display:grid; grid-template-columns:12px 1fr auto auto; gap:10px; align-items:center; font-size:12.5px}
+  .glegend .sw{width:12px; height:12px; border-radius:3px}
+  .glegend .li .nm{color:var(--ink)}
+  .glegend .li .cells{font-family:var(--mono); font-size:11px; color:var(--ink-3)}
+  .glegend .li .tok{font-family:var(--mono); font-size:12px; color:var(--ink-2); text-align:right; min-width:64px}
+
+  .hbars{display:flex; flex-direction:column; gap:11px}
+  .hbar{display:grid; grid-template-columns:130px 1fr auto; gap:12px; align-items:center; font-size:12.5px}
+  .hbar .lab{display:flex; align-items:center; gap:8px} .hbar .lab .sw{width:9px;height:9px;border-radius:2px}
+  .htrack{height:16px; background:var(--panel-2); border:1px solid var(--line); border-radius:5px; overflow:hidden}
+  .hfill{height:100%; border-radius:4px}
+  .hval{font-family:var(--mono); font-size:12px; color:var(--ink-2); text-align:right}
+
+  table{width:100%; border-collapse:collapse; font-size:12.5px}
+  th{text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-weight:500; padding:0 12px 9px; border-bottom:1px solid var(--line)}
+  td{padding:9px 12px; border-bottom:1px solid var(--line)} tr:last-child td{border-bottom:0}
+  td.n{font-family:var(--mono); text-align:right; font-variant-numeric:tabular-nums}
+  td .file{font-family:var(--mono); font-size:12px}
+  .badge{display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:600; letter-spacing:.04em; padding:2px 7px; border-radius:5px; text-transform:uppercase}
+  .badge.warm{background:rgba(255,122,82,.15); color:var(--accent-2)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px}
+
+  .handoff{background:var(--panel-2); border:1px solid var(--line); border-radius:10px; padding:2px 16px 6px; margin-top:2px; max-height:340px; overflow:auto}
+  .handoff h3{font-size:14px; margin:16px 0 8px} .handoff h4{font-size:12px; font-family:var(--mono); color:var(--ink-2); text-transform:uppercase; letter-spacing:.06em; margin:16px 0 6px}
+  .handoff p,.handoff li{font-size:12.5px; color:var(--ink-2); margin:5px 0} .handoff code{font-family:var(--mono); font-size:11.5px; background:var(--bg); padding:1px 5px; border-radius:4px; color:var(--ink)}
+  .handoff ul{margin:6px 0; padding-left:20px}
+
+  .al-copy{border-style:dashed}
+  .al-copy textarea{width:100%; min-height:56px; resize:vertical; background:var(--panel-2); color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:10px 12px; font-family:var(--sans); font-size:13px; margin:4px 0 12px}
+  .al-copy button{font-family:var(--mono); font-size:12.5px; font-weight:600; color:#0e1217; background:var(--accent); border:0; border-radius:9px; padding:10px 18px; cursor:pointer}
+  .al-copy button:hover{background:var(--accent-2)}
+  .al-copy output{font-family:var(--mono); font-size:12px; color:var(--good); margin-left:12px}
+  .al-copy .note-txt{font-size:12px; color:var(--ink-3); margin:0 0 6px}
+  .foot{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:22px; padding-top:16px; border-top:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--ink-3)}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+  @media (max-width:820px){.split{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.verdict{grid-template-columns:1fr}.lede{font-size:22px}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap"><div class="page">
+
+  <header class="top">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="18.5" stroke="var(--line-2)" stroke-width="1.5"/>
+        <g stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round">
+          <path d="M20 6.5 L26 15 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M33.5 20 L25 26 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M20 33.5 L14 25 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M6.5 20 L15 14 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+        </g>
+        <circle cx="20" cy="20" r="4.4" fill="var(--bg)" stroke="var(--accent)" stroke-width="2.2"/>
+      </svg>
+      <div><h1>ArtiLens</h1><div class="sub">/artilens:lens</div></div>
+    </div>
+    <div class="crumbs">
+      <span class="chip"><span class="dot" style="background:var(--accent)"></span> orbit-analytics</span>
+      <span class="sep">/</span><span class="chip">feat/streaming-metrics</span>
+      <span class="sep">·</span><span>512 messages · 4 subagents</span>
+    </div>
+  </header>
+
+  <p class="eyebrow">Context lens</p>
+  <h2 class="lede">Context is 62% full — time to compact</h2>
+  <p class="lede-sub">You're 599.5k of 967k tokens into the window. Health is holding, but three finished threads (dependency mapping, the aggregator spike, the artifact author) are dead weight. Compact them and keep going.</p>
+
+  <section class="verdict" data-artilens-state="verdict" style="position:relative">
+    <div class="gaugewrap">
+      <svg viewBox="0 0 120 120" width="132" height="132">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="var(--panel-2)" stroke-width="11"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="var(--warn)" stroke-width="11" stroke-linecap="round"
+          stroke-dasharray="209 327" transform="rotate(-90 60 60)"/>
+      </svg>
+      <div class="lbl"><div class="num mono">64</div><div class="cap">Health</div></div>
+    </div>
+    <div class="body">
+      <span class="pill compact">◐ Recommend: compact</span>
+      <h3>Compact three finished threads before the next task</h3>
+      <p>Context pressure is moderate and topic drift is low, so a handoff isn't needed yet. Compacting the completed work reclaims roughly 148k tokens and keeps Opus reasoning on fresh context.</p>
+      <div class="metrics">
+        <div class="m"><span class="mv mono">62%</span><span class="mk">Window used</span></div>
+        <div class="m"><span class="mv mono">0.18</span><span class="mk">Reread ratio</span></div>
+        <div class="m"><span class="mv mono">0.34</span><span class="mk">Topic drift</span></div>
+        <div class="m"><span class="mv mono">high</span><span class="mk">Confidence</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="split">
+    <section class="panel" data-artilens-state="context-grid">
+      <h2>Context window <span class="tag">1 cell ≈ 9,670 tokens</span></h2>
+      <p class="note">Every square is 1% of the 967k window, colored by what fills it.</p>
+      <div class="grid10" id="grid" aria-label="Context window fill, 62 of 100 cells used"></div>
+      <div class="glegend">
+        <div class="li"><span class="sw" style="background:var(--accent)"></span><span class="nm">Conversation messages</span><span class="cells">41 cells</span><span class="tok">397.5k</span></div>
+        <div class="li"><span class="sw" style="background:var(--c-skills)"></span><span class="nm">Skills loaded</span><span class="cells">8 cells</span><span class="tok">77.0k</span></div>
+        <div class="li"><span class="sw" style="background:var(--c-tools)"></span><span class="nm">System tools</span><span class="cells">6 cells</span><span class="tok">58.0k</span></div>
+        <div class="li"><span class="sw" style="background:var(--c-mem)"></span><span class="nm">Memory files</span><span class="cells">4 cells</span><span class="tok">38.0k</span></div>
+        <div class="li"><span class="sw" style="background:var(--c-sys)"></span><span class="nm">System prompt</span><span class="cells">3 cells</span><span class="tok">29.0k</span></div>
+        <div class="li"><span class="sw" style="background:var(--panel-2);border:1px solid var(--line)"></span><span class="nm">Free</span><span class="cells">38 cells</span><span class="tok">367.5k</span></div>
+      </div>
+    </section>
+
+    <div>
+      <section class="panel" style="margin-top:0" data-artilens-state="usage">
+        <h2>Token breakdown</h2>
+        <p class="note">Estimated allocation across the categories above.</p>
+        <div class="hbars">
+          <div class="hbar"><span class="lab"><span class="sw" style="background:var(--accent)"></span>Messages</span><div class="htrack"><div class="hfill" style="width:100%;background:var(--accent)"></div></div><span class="hval">397.5k</span></div>
+          <div class="hbar"><span class="lab"><span class="sw" style="background:var(--c-skills)"></span>Skills</span><div class="htrack"><div class="hfill" style="width:19.4%;background:var(--c-skills)"></div></div><span class="hval">77.0k</span></div>
+          <div class="hbar"><span class="lab"><span class="sw" style="background:var(--c-tools)"></span>System tools</span><div class="htrack"><div class="hfill" style="width:14.6%;background:var(--c-tools)"></div></div><span class="hval">58.0k</span></div>
+          <div class="hbar"><span class="lab"><span class="sw" style="background:var(--c-mem)"></span>Memory files</span><div class="htrack"><div class="hfill" style="width:9.6%;background:var(--c-mem)"></div></div><span class="hval">38.0k</span></div>
+          <div class="hbar"><span class="lab"><span class="sw" style="background:var(--c-sys)"></span>System prompt</span><div class="htrack"><div class="hfill" style="width:7.3%;background:var(--c-sys)"></div></div><span class="hval">29.0k</span></div>
+        </div>
+      </section>
+      <section class="panel" data-artilens-state="tools">
+        <h2>Tool activity</h2>
+        <div style="overflow-x:auto"><table>
+          <thead><tr><th>Tool</th><th style="text-align:right">Calls</th><th style="text-align:right">In</th><th style="text-align:right">Out</th></tr></thead>
+          <tbody>
+            <tr><td class="file">Read</td><td class="n">112</td><td class="n">24 KB</td><td class="n">1.6 MB</td></tr>
+            <tr><td class="file">Bash</td><td class="n">98</td><td class="n">31 KB</td><td class="n">1.9 MB</td></tr>
+            <tr><td class="file">Edit</td><td class="n">71</td><td class="n">142 KB</td><td class="n">402 KB</td></tr>
+            <tr><td class="file">Grep</td><td class="n">60</td><td class="n">9 KB</td><td class="n">744 KB</td></tr>
+            <tr><td class="file">Glob</td><td class="n">22</td><td class="n">3 KB</td><td class="n">88 KB</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel" data-artilens-state="hot-files">
+    <h2>Hot files <span class="tag">re-read ≥ 3× flagged</span></h2>
+    <p class="note">Files pulled into context repeatedly — candidates to summarize into memory instead of re-reading.</p>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>File</th><th style="text-align:right">Reads</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td class="file">packages/streaming/src/aggregator.ts</td><td class="n">9</td><td><span class="badge warm">Re-read 9×</span></td></tr>
+        <tr><td class="file">packages/streaming/src/socket.ts</td><td class="n">7</td><td><span class="badge warm">Re-read 7×</span></td></tr>
+        <tr><td class="file">CLAUDE.md</td><td class="n">5</td><td><span class="badge warm">Re-read 5×</span></td></tr>
+        <tr><td class="file">plan/00-GREAT-PLAN.md</td><td class="n">4</td><td><span class="badge warm">Re-read 4×</span></td></tr>
+        <tr><td class="file">packages/dashboard/src/LiveTiles.tsx</td><td class="n">4</td><td><span class="badge warm">Re-read 4×</span></td></tr>
+        <tr><td class="file">.claude/rules/testing.md</td><td class="n">3</td><td><span class="badge warm">Re-read 3×</span></td></tr>
+        <tr><td class="file">packages/core/src/registry.ts</td><td class="n">2</td><td style="color:var(--ink-3)">—</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="panel" data-artilens-state="handoff">
+    <h2>Handoff draft <span class="tag">ready if you /clear instead</span></h2>
+    <p class="note">A resume-anywhere brief ArtiLens keeps warm — copy it into a fresh session to continue without losing the thread.</p>
+    <div class="handoff">
+      <h3># ArtiLens Handoff</h3>
+      <p><strong>Task:</strong> Ship the streaming-metrics pipeline on <code>feat/streaming-metrics</code> for orbit-analytics.</p>
+      <h4>State</h4>
+      <ul>
+        <li>WebSocket ingestion gateway (<code>socket.ts</code>) and sliding-window aggregator (<code>aggregator.ts</code>) implemented and unit-tested.</li>
+        <li>Live dashboard tiles (<code>LiveTiles.tsx</code>) wired to the <code>/v2/metrics/stream</code> SSE endpoint.</li>
+        <li>Backpressure handling added; batch flush tuned to 250 ms.</li>
+      </ul>
+      <h4>Next</h4>
+      <ul>
+        <li>Cover <code>socket.ts</code> reconnect path — coverage is 64.5%, target 85%.</li>
+        <li>Add a backpressure integration test at 10k msg/s.</li>
+        <li>Document the streaming architecture under <code>docs/</code>.</li>
+      </ul>
+      <h4>Watch out</h4>
+      <ul>
+        <li><code>pnpm-lock.yaml</code> churned when swapping socket.io → ws@8 — verify the lockfile before merge.</li>
+        <li>Don't regress the 250 ms flush cadence; it balances latency against CPU.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="al-panel al-copy panel" data-artilens="copy-as-prompt">
+    <h2>Copy as prompt</h2>
+    <p class="note-txt">Hand this lens state to Claude Code as a protocol&nbsp;v1 prompt — e.g. ask it to run the compact it recommends.</p>
+    <textarea data-artilens-note placeholder="Optional note — e.g. 'compact the three finished threads, keep the streaming work'"></textarea>
+    <div><button data-copy-as-prompt>Copy state</button><output data-copy-status></output></div>
+    <script type="application/json" data-artilens-meta>{"artifact":"lens","url":null}</script>
+  </section>
+
+  <div class="foot"><span>ArtiLens · artilens.lens.data/v1</span><span>Health 64 · compact · high confidence</span></div>
+
+</div></div>
+
+<script>
+  const cats=[["messages",41,"var(--accent)"],["skills",8,"var(--c-skills)"],["tools",6,"var(--c-tools)"],["mem",4,"var(--c-mem)"],["sys",3,"var(--c-sys)"]];
+  const g=document.getElementById("grid");
+  if(g){let html="";cats.forEach(c=>{for(let i=0;i<c[1];i++)html+='<span class="cell" style="background:'+c[2]+';border-color:transparent"></span>';});
+    const used=cats.reduce((a,c)=>a+c[1],0);for(let i=used;i<100;i++)html+='<span class="cell f"></span>';g.innerHTML=html;}
+</script>
+<script>
+document.querySelectorAll('[data-copy-as-prompt]').forEach(button => button.addEventListener('click', async () => {
+  const meta = JSON.parse(document.querySelector('[data-artilens-meta]')?.textContent || '{}');
+  const state = {};
+  document.querySelectorAll('[data-artilens-state]').forEach((node, index) => {
+    state[node.getAttribute('data-artilens-state') || index] = {
+      text: node.innerText.slice(0, 500),
+      checked: [...node.querySelectorAll('input[type=checkbox],input[type=radio]')].filter(i => i.checked).map(i => i.getAttribute('data-target') || i.value),
+      cards: [...node.querySelectorAll('[data-card]')].map(card => ({ id: card.getAttribute('data-card'), column: card.closest('[data-column]')?.getAttribute('data-column') }))
+    };
+  });
+  const changes = [...document.querySelectorAll('[data-change-op]')].map(node => ({ op: node.getAttribute('data-change-op'), target: node.getAttribute('data-target') || node.getAttribute('data-card'), value: node.checked ?? node.closest('[data-column]')?.getAttribute('data-column') })).filter(item => item.target);
+  const payload = { artilens: 1, artifact: meta.artifact, url: meta.url, captured_at: new Date().toISOString(), state, changes, note: document.querySelector('[data-artilens-note]')?.value || '' };
+  await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+  document.querySelector('[data-copy-status]').textContent = 'Copied protocol v1 JSON';
+}));
+</script>

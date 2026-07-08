@@ -1,0 +1,235 @@
+<title>ArtiLens · PR Walkthrough</title>
+<style>
+  :root{
+    --bg:#0e1217; --grid:#11161d; --panel:#151b23; --panel-2:#1a212b; --line:#232c38; --line-2:#2d3846;
+    --ink:#e9eef4; --ink-2:#9aa7b6; --ink-3:#697585; --accent:#ff7a52; --accent-2:#ff9169; --accent-dim:rgba(255,122,82,.14);
+    --good:#33b174; --warn:#d9a521; --crit:#e5604d;
+    --add:#2fae6b; --addbg:rgba(47,174,107,.12); --del:#e5604d; --delbg:rgba(229,96,77,.1);
+    --radius:14px;
+    --mono:ui-monospace,"Cascadia Code","SF Mono","Segoe UI Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: light){:root{
+    --bg:#f6f7f5; --grid:#eef0ec; --panel:#ffffff; --panel-2:#f4f6f3; --line:#e4e7e2; --line-2:#d5d9d3;
+    --ink:#161b21; --ink-2:#586472; --ink-3:#8b95a2; --accent:#e5552a; --accent-2:#e5552a; --accent-dim:rgba(229,85,42,.1);
+    --add:#1f9e6a; --addbg:rgba(31,158,106,.1); --del:#d24b34; --delbg:rgba(210,75,52,.08);}}
+  :root[data-theme="dark"]{--bg:#0e1217; --grid:#11161d; --panel:#151b23; --panel-2:#1a212b; --line:#232c38; --line-2:#2d3846;
+    --ink:#e9eef4; --ink-2:#9aa7b6; --ink-3:#697585; --accent:#ff7a52; --accent-2:#ff9169; --accent-dim:rgba(255,122,82,.14);
+    --add:#2fae6b; --addbg:rgba(47,174,107,.12); --del:#e5604d; --delbg:rgba(229,96,77,.1);}
+  :root[data-theme="light"]{--bg:#f6f7f5; --grid:#eef0ec; --panel:#ffffff; --panel-2:#f4f6f3; --line:#e4e7e2; --line-2:#d5d9d3;
+    --ink:#161b21; --ink-2:#586472; --ink-3:#8b95a2; --accent:#e5552a; --accent-2:#e5552a; --accent-dim:rgba(229,85,42,.1);
+    --add:#1f9e6a; --addbg:rgba(31,158,106,.1); --del:#d24b34; --delbg:rgba(210,75,52,.08);}
+  *{box-sizing:border-box} body{margin:0}
+  .wrap{font-family:var(--sans); color:var(--ink); background:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:44px 44px; min-height:100vh; padding:28px 20px 56px; line-height:1.5; -webkit-font-smoothing:antialiased}
+  .page{max-width:1060px; margin:0 auto}
+  .mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+  .top{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px}
+  .brand{display:flex; align-items:center; gap:12px}
+  .mark{width:34px; height:34px; flex:0 0 auto}
+  .brand h1{font-size:15px; margin:0; letter-spacing:.02em; font-weight:650}
+  .brand .sub{font-family:var(--mono); font-size:11px; color:var(--ink-3); letter-spacing:.04em}
+  .crumbs{display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:var(--mono); font-size:11.5px; color:var(--ink-2)}
+  .chip{display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border:1px solid var(--line); border-radius:999px; background:var(--panel)}
+  .chip .dot{width:7px; height:7px; border-radius:50%}
+  .sep{color:var(--ink-3)}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin:0 0 6px}
+  .lede{font-size:26px; font-weight:660; letter-spacing:-.02em; margin:0 0 4px; text-wrap:balance}
+  .lede-sub{color:var(--ink-2); font-size:13.5px; margin:0 0 22px; max-width:66ch}
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-top:12px}
+  .panel h2{font-size:12px; font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--ink-2); margin:0 0 2px; display:flex; align-items:center; gap:8px}
+  .panel h2 .tag{margin-left:auto; font-size:10px; color:var(--ink-3); text-transform:none}
+  .panel .note{font-size:12px; color:var(--ink-3); margin:0 0 16px}
+
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+  .tile{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:15px 16px; position:relative; overflow:hidden}
+  .tile .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+  .tile .v{font-family:var(--mono); font-size:26px; font-weight:600; margin-top:7px; line-height:1}
+  .tile .m{font-size:11.5px; color:var(--ink-2); margin-top:8px}
+  .tile .v .up{color:var(--add)} .tile .v .dn{color:var(--del)}
+  .tile.risk::after{content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--crit)}
+
+  /* commit timeline */
+  .commits{display:flex; flex-direction:column; position:relative; padding-left:6px}
+  .commit{display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:baseline; padding:8px 0; border-left:2px solid var(--line); margin-left:5px; padding-left:20px; position:relative}
+  .commit::before{content:""; position:absolute; left:-6px; top:13px; width:9px; height:9px; border-radius:50%; background:var(--accent); border:2px solid var(--panel)}
+  .commit.merge::before{background:var(--ink-3)}
+  .commit .h{font-family:var(--mono); font-size:11px; color:var(--ink-3)}
+  .commit .s{font-size:13px}
+  .commit .s .type{font-family:var(--mono); font-weight:600; font-size:11.5px; padding:1px 6px; border-radius:5px; margin-right:8px; background:var(--panel-2); color:var(--ink-2)}
+  .commit .s .type.feat{color:var(--add); background:var(--addbg)} .commit .s .type.fix{color:var(--crit); background:var(--delbg)}
+  .commit .s .type.perf{color:var(--accent-2); background:var(--accent-dim)}
+  .commit .a{font-family:var(--mono); font-size:11px; color:var(--ink-3); white-space:nowrap}
+
+  /* files table */
+  table{width:100%; border-collapse:collapse; font-size:12.5px}
+  th{text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-weight:500; padding:0 12px 9px; border-bottom:1px solid var(--line)}
+  td{padding:10px 12px; border-bottom:1px solid var(--line)} tr:last-child td{border-bottom:0}
+  td .path{font-family:var(--mono); font-size:12px}
+  td .st{font-family:var(--mono); font-size:10px; font-weight:700; width:20px; display:inline-block; text-align:center; border-radius:4px; margin-right:8px}
+  td .st.A{color:var(--add); background:var(--addbg)} td .st.M{color:var(--warn); background:rgba(217,165,33,.12)}
+  td.churn{font-family:var(--mono); text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums}
+  td.churn .a{color:var(--add)} td.churn .d{color:var(--del); margin-left:8px}
+  .rk{display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:600; letter-spacing:.04em; padding:2px 8px; border-radius:5px; text-transform:uppercase}
+  .rk.high{color:var(--crit); background:var(--delbg)} .rk.medium{color:var(--warn); background:rgba(217,165,33,.12)} .rk.low{color:var(--ink-3); background:var(--panel-2)}
+  .reason{font-size:11px; color:var(--ink-3); margin-top:3px}
+
+  /* diff blocks */
+  .diff{margin-top:12px; border:1px solid var(--line); border-radius:10px; overflow:hidden}
+  .diff .dh{display:flex; align-items:center; gap:10px; padding:9px 14px; background:var(--panel-2); border-bottom:1px solid var(--line); font-family:var(--mono); font-size:12px}
+  .diff .dh .path{font-weight:600} .diff .dh .rk{margin-left:auto}
+  .diff pre{margin:0; padding:10px 0; overflow-x:auto; font-family:var(--mono); font-size:11.5px; line-height:1.75; background:var(--panel)}
+  .diff .ln{display:block; padding:0 14px; white-space:pre}
+  .diff .ln.add{background:var(--addbg); color:var(--ink)} .diff .ln.add::before{content:"+ "; color:var(--add)}
+  .diff .ln.del{background:var(--delbg); color:var(--ink)} .diff .ln.del::before{content:"− "; color:var(--del)}
+  .diff .ln.ctx{color:var(--ink-2)} .diff .ln.ctx::before{content:"  "}
+  .diff .ln.hunk{color:var(--ink-3); background:var(--panel-2)} .diff .ln.hunk::before{content:""}
+  .anno{padding:10px 14px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--ink-2); background:var(--panel)}
+  .anno b{color:var(--ink)}
+
+  .callout{margin-top:14px; padding:12px 14px; border-left:2px solid var(--crit); background:var(--delbg); border-radius:0 8px 8px 0; font-size:12.5px}
+  .callout b{font-family:var(--mono)} .callout ul{margin:8px 0 0; padding-left:18px} .callout li{margin:4px 0; color:var(--ink-2)}
+
+  .al-copy{border-style:dashed}
+  .al-copy textarea{width:100%; min-height:56px; resize:vertical; background:var(--panel-2); color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:10px 12px; font-family:var(--sans); font-size:13px; margin:4px 0 12px}
+  .al-copy button{font-family:var(--mono); font-size:12.5px; font-weight:600; color:#0e1217; background:var(--accent); border:0; border-radius:9px; padding:10px 18px; cursor:pointer}
+  .al-copy button:hover{background:var(--accent-2)}
+  .al-copy output{font-family:var(--mono); font-size:12px; color:var(--good); margin-left:12px}
+  .al-copy .note-txt{font-size:12px; color:var(--ink-3); margin:0 0 6px}
+  .foot{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:22px; padding-top:16px; border-top:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--ink-3)}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+  @media (max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}.commit{grid-template-columns:1fr; gap:2px}.commit .a{grid-column:1}.lede{font-size:22px}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap"><div class="page">
+
+  <header class="top">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="18.5" stroke="var(--line-2)" stroke-width="1.5"/>
+        <g stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round">
+          <path d="M20 6.5 L26 15 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M33.5 20 L25 26 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M20 33.5 L14 25 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M6.5 20 L15 14 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+        </g>
+        <circle cx="20" cy="20" r="4.4" fill="var(--bg)" stroke="var(--accent)" stroke-width="2.2"/>
+      </svg>
+      <div><h1>ArtiLens</h1><div class="sub">/artilens:pr</div></div>
+    </div>
+    <div class="crumbs">
+      <span class="chip"><span class="dot" style="background:var(--accent)"></span> orbit-analytics</span>
+      <span class="chip mono">feat/streaming-metrics → main</span>
+      <span class="sep">·</span><span>a3f9c1d2</span>
+    </div>
+  </header>
+
+  <p class="eyebrow">PR walkthrough · vs main</p>
+  <h2 class="lede">Streaming metrics pipeline — 14 commits, ready for review</h2>
+  <p class="lede-sub">Real-time ingestion, aggregation and live dashboard tiles. Built from deterministic git data — commits, churn and risk, narrated file-by-file so a reviewer knows where to spend attention before opening the diff.</p>
+
+  <section class="kpis" data-artilens-state="summary">
+    <div class="tile"><div class="k">Commits</div><div class="v mono">14</div><div class="m">14 ahead · 2 behind main</div></div>
+    <div class="tile"><div class="k">Files changed</div><div class="v mono">23</div><div class="m">17 added · 6 modified</div></div>
+    <div class="tile"><div class="k">Net churn</div><div class="v mono"><span class="up">+1,847</span></div><div class="m"><span style="color:var(--add)">+1,847</span> / <span style="color:var(--del)">−412</span> lines</div></div>
+    <div class="tile risk"><div class="k">Risk points</div><div class="v mono">3</div><div class="m">2 high · 1 lockfile</div></div>
+  </section>
+
+  <section class="panel" data-artilens-state="commits">
+    <h2>Commit history <span class="tag">newest first</span></h2>
+    <p class="note">14 commits since branching from main.</p>
+    <div class="commits">
+      <div class="commit"><span class="h mono">a3f9c1d</span><span class="s"><span class="type merge">merge</span>Merge main into feat/streaming-metrics</span><span class="a">2h ago</span></div>
+      <div class="commit"><span class="h mono">e71b0a4</span><span class="s"><span class="type fix">fix</span>reconnect dashboard socket on drop</span><span class="a">3h ago</span></div>
+      <div class="commit"><span class="h mono">c02d9f8</span><span class="s"><span class="type perf">perf</span>batch flush every 250ms</span><span class="a">5h ago</span></div>
+      <div class="commit"><span class="h mono">9a4e17c</span><span class="s"><span class="type feat">feat</span>/v2/metrics/stream SSE endpoint</span><span class="a">Yesterday</span></div>
+      <div class="commit"><span class="h mono">2f81bd6</span><span class="s"><span class="type fix">fix</span>backpressure on slow consumers</span><span class="a">Yesterday</span></div>
+      <div class="commit"><span class="h mono">7dc3e90</span><span class="s"><span class="type feat">feat</span>live metric tiles with sparklines</span><span class="a">Jul 5</span></div>
+      <div class="commit"><span class="h mono">b58a2c1</span><span class="s"><span class="type">test</span>aggregator edge cases</span><span class="a">Jul 5</span></div>
+      <div class="commit"><span class="h mono">4e0f7a3</span><span class="s"><span class="type feat">feat</span>sliding-window aggregator</span><span class="a">Jul 4</span></div>
+      <div class="commit"><span class="h mono">d19c6b5</span><span class="s"><span class="type feat">feat</span>WebSocket ingestion gateway</span><span class="a">Jul 4</span></div>
+      <div class="commit"><span class="h mono">86b4f02</span><span class="s"><span class="type">chore</span>add ws@8, drop socket.io</span><span class="a">Jul 3</span></div>
+    </div>
+    <p class="note" style="margin:12px 0 0">+ 4 earlier commits (refactor, test, docs, style).</p>
+  </section>
+
+  <section class="panel" data-artilens-state="files">
+    <h2>Changed files <span class="tag">by risk, then churn</span></h2>
+    <p class="note">Where a reviewer should look first. Risk is heuristic — large churn, source without a paired test, or a dependency lockfile.</p>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>File</th><th style="text-align:right">Churn</th><th>Risk</th></tr></thead>
+      <tbody>
+        <tr><td><span class="st A">A</span><span class="path">packages/streaming/src/socket.ts</span><div class="reason">Large change · source without paired test signal</div></td><td class="churn"><span class="a">+214</span><span class="d">−0</span></td><td><span class="rk high">High</span></td></tr>
+        <tr><td><span class="st A">A</span><span class="path">packages/streaming/src/aggregator.ts</span><div class="reason">Large change · core hot path</div></td><td class="churn"><span class="a">+186</span><span class="d">−0</span></td><td><span class="rk high">High</span></td></tr>
+        <tr><td><span class="st M">M</span><span class="path">pnpm-lock.yaml</span><div class="reason">Dependency lockfile — socket.io → ws@8</div></td><td class="churn"><span class="a">+312</span><span class="d">−88</span></td><td><span class="rk high">High</span></td></tr>
+        <tr><td><span class="st A">A</span><span class="path">packages/dashboard/src/LiveTiles.tsx</span><div class="reason">Source without paired test signal</div></td><td class="churn"><span class="a">+148</span><span class="d">−0</span></td><td><span class="rk medium">Medium</span></td></tr>
+        <tr><td><span class="st A">A</span><span class="path">packages/streaming/src/window.ts</span></td><td class="churn"><span class="a">+92</span><span class="d">−0</span></td><td><span class="rk medium">Medium</span></td></tr>
+        <tr><td><span class="st A">A</span><span class="path">packages/api/src/routes/stream.ts</span></td><td class="churn"><span class="a">+76</span><span class="d">−0</span></td><td><span class="rk medium">Medium</span></td></tr>
+        <tr><td><span class="st A">A</span><span class="path">packages/core/src/ringBuffer.ts</span></td><td class="churn"><span class="a">+64</span><span class="d">−0</span></td><td><span class="rk medium">Medium</span></td></tr>
+        <tr><td><span class="st A">A</span><span class="path">packages/streaming/test/aggregator.test.ts</span></td><td class="churn"><span class="a">+128</span><span class="d">−0</span></td><td><span class="rk low">Low</span></td></tr>
+        <tr><td><span class="st M">M</span><span class="path">package.json</span></td><td class="churn"><span class="a">+6</span><span class="d">−3</span></td><td><span class="rk low">Low</span></td></tr>
+      </tbody>
+    </table></div>
+    <p class="note" style="margin:12px 0 0">+ 14 more files (tests, docs, config) — all low risk.</p>
+  </section>
+
+  <section class="panel" data-artilens-state="diff">
+    <h2>Annotated diff <span class="tag">truncated hunks · scrubbed</span></h2>
+    <p class="note">The two highest-risk hunks, with a one-line reviewer note. Full diff stays out of model context.</p>
+
+    <div class="diff">
+      <div class="dh"><span class="path">packages/streaming/src/aggregator.ts</span><span class="rk high">High</span></div>
+      <pre><span class="ln hunk">@@ -0,0 +1,186 @@ sliding-window aggregator</span><span class="ln add">export class SlidingWindow {</span><span class="ln add">  #buckets = new RingBuffer&lt;Bucket&gt;(this.slots);</span><span class="ln add">  push(sample: Sample) {</span><span class="ln add">    const slot = this.slotFor(sample.ts);</span><span class="ln add">    this.#buckets.at(slot).add(sample.value);</span><span class="ln ctx">  }</span><span class="ln add">  flush(now = Date.now()) {</span><span class="ln add">    return this.#buckets.drainBefore(now - this.windowMs);</span><span class="ln ctx">  }</span></pre>
+      <div class="anno"><b>Reviewer note:</b> New hot path on every ingested sample. Check <b>slotFor()</b> boundary math at window rollover — off-by-one here silently drops the oldest bucket.</div>
+    </div>
+
+    <div class="diff">
+      <div class="dh"><span class="path">packages/streaming/src/socket.ts</span><span class="rk high">High</span></div>
+      <pre><span class="ln hunk">@@ -0,0 +1,214 @@ ingestion gateway</span><span class="ln add">socket.on('message', (raw) =&gt; {</span><span class="ln add">  if (queue.length &gt; MAX_QUEUE) {</span><span class="ln add">    socket.pause();            // backpressure</span><span class="ln add">    metrics.dropped.inc();</span><span class="ln add">    return;</span><span class="ln ctx">  }</span><span class="ln add">  queue.push(decode(raw));</span><span class="ln ctx">});</span></pre>
+      <div class="anno"><b>Reviewer note:</b> Backpressure pauses the socket but there's <b>no resume path in this hunk</b> — confirm <b>socket.resume()</b> fires when the queue drains, or ingestion stalls after one burst.</div>
+    </div>
+  </section>
+
+  <section class="panel" data-artilens-state="risk-areas">
+    <h2>Before you merge</h2>
+    <p class="callout">
+      <b>3 risk points</b> worth a second pass:
+      <ul>
+        <li><b>socket.ts</b> — no reconnect/resume coverage; unit tests don't exercise the backpressure release.</li>
+        <li><b>aggregator.ts</b> — window-rollover boundary is the kind of bug that only shows under sustained load. Add the 10k msg/s test before shipping.</li>
+        <li><b>pnpm-lock.yaml</b> — 400 lines of lockfile churn from the socket.io → ws@8 swap. Diff it against a clean install to be sure nothing else moved.</li>
+      </ul>
+    </p>
+  </section>
+
+  <section class="al-panel al-copy panel" data-artilens="copy-as-prompt">
+    <h2>Copy as prompt</h2>
+    <p class="note-txt">Send this walkthrough back to Claude Code as a protocol&nbsp;v1 prompt — e.g. "write the missing socket resume test."</p>
+    <textarea data-artilens-note placeholder="Optional note — e.g. 'draft the PR description from these commits'"></textarea>
+    <div><button data-copy-as-prompt>Copy state</button><output data-copy-status></output></div>
+    <script type="application/json" data-artilens-meta>{"artifact":"pr","url":null}</script>
+  </section>
+
+  <div class="foot"><span>ArtiLens · artilens.git.data/v1</span><span>PR Walkthrough vs main · 23 files · deterministic git only</span></div>
+
+</div></div>
+
+<script>
+document.querySelectorAll('[data-copy-as-prompt]').forEach(button => button.addEventListener('click', async () => {
+  const meta = JSON.parse(document.querySelector('[data-artilens-meta]')?.textContent || '{}');
+  const state = {};
+  document.querySelectorAll('[data-artilens-state]').forEach((node, index) => {
+    state[node.getAttribute('data-artilens-state') || index] = {
+      text: node.innerText.slice(0, 500),
+      checked: [...node.querySelectorAll('input[type=checkbox],input[type=radio]')].filter(i => i.checked).map(i => i.getAttribute('data-target') || i.value),
+      cards: [...node.querySelectorAll('[data-card]')].map(card => ({ id: card.getAttribute('data-card'), column: card.closest('[data-column]')?.getAttribute('data-column') }))
+    };
+  });
+  const changes = [...document.querySelectorAll('[data-change-op]')].map(node => ({ op: node.getAttribute('data-change-op'), target: node.getAttribute('data-target') || node.getAttribute('data-card'), value: node.checked ?? node.closest('[data-column]')?.getAttribute('data-column') })).filter(item => item.target);
+  const payload = { artilens: 1, artifact: meta.artifact, url: meta.url, captured_at: new Date().toISOString(), state, changes, note: document.querySelector('[data-artilens-note]')?.value || '' };
+  await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+  document.querySelector('[data-copy-status]').textContent = 'Copied protocol v1 JSON';
+}));
+</script>

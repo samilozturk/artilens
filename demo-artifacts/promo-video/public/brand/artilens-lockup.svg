@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="640" viewBox="0 0 2400 640" role="img" aria-labelledby="title desc">
+  <title id="title">ArtiLens logo</title>
+  <desc id="desc">The ArtiLens compass lens mark next to the ArtiLens wordmark.</desc>
+  <defs>
+    <style>
+      :root {
+        --artilens-bg: #f6f8fb;
+        --artilens-line: #cdd7e3;
+        --artilens-ink: #141a21;
+        --artilens-accent: #ef5a34;
+      }
+      .wordmark {
+        fill: var(--artilens-ink);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 274px;
+        font-weight: 700;
+        letter-spacing: -8px;
+      }
+    </style>
+  </defs>
+  <g transform="translate(104 80) scale(1.171875)">
+    <circle cx="204.8" cy="204.8" r="189.44" fill="none" stroke="var(--artilens-line)" stroke-width="15.36"/>
+    <g fill="var(--artilens-accent)" fill-opacity="0.22" stroke="var(--artilens-accent)" stroke-width="22.528" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M204.8 66.56 266.24 153.6 204.8 204.8Z"/>
+      <path d="M343.04 204.8 256 266.24 204.8 204.8Z"/>
+      <path d="M204.8 343.04 143.36 256 204.8 204.8Z"/>
+      <path d="M66.56 204.8 153.6 143.36 204.8 204.8Z"/>
+    </g>
+    <circle cx="204.8" cy="204.8" r="45.056" fill="var(--artilens-bg)" stroke="var(--artilens-accent)" stroke-width="22.528"/>
+  </g>
+  <text class="wordmark" x="620" y="411">ArtiLens</text>
+</svg>

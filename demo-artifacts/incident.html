@@ -1,0 +1,84 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Investigation timeline and hypothesis board."><title>Incident Timeline</title><style> :root{--color-primary:#1a4d8f;--color-accent:#f59e0b;--color-surface:#f8fafc;--color-danger:#dc2626;--color-success:#16a34a;--color-ink:#172033;--color-muted:#64748b;--color-line:#d7dee8;--radius:6px;--space:8px;--font-body:system-ui,-apple-system,Segoe UI,sans-serif;--font-code:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--color-surface);color:var(--color-ink);font-family:var(--font-body);font-size:14px;line-height:1.45}
+a{color:var(--color-primary)}
+main{max-width:1180px;margin:0 auto;padding:24px}
+.al-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;border-bottom:1px solid var(--color-line);padding-bottom:14px}
+.al-title{margin:0;font-size:28px;line-height:1.15;letter-spacing:0}
+.al-subtitle{margin:6px 0 0;color:var(--color-muted)}
+.al-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.al-panel{background:#fff;border:1px solid var(--color-line);border-radius:var(--radius);padding:14px}
+.al-kpi{font-size:26px;font-weight:700}
+.al-muted{color:var(--color-muted)}
+.al-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--color-line);border-radius:999px;padding:2px 8px;background:#fff;font-size:12px}
+.al-danger{color:var(--color-danger)}.al-success{color:var(--color-success)}.al-warning{color:#a16207}
+table{width:100%;border-collapse:collapse;background:#fff}
+th,td{border-bottom:1px solid var(--color-line);padding:8px;text-align:left;vertical-align:top}
+th{font-size:12px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.04em}
+pre,code{font-family:var(--font-code)}
+pre{overflow:auto;background:#0f172a;color:#e2e8f0;padding:12px;border-radius:var(--radius)}
+button{font:inherit;border:1px solid var(--color-line);background:#fff;border-radius:var(--radius);padding:7px 10px;cursor:pointer}
+button:hover{border-color:var(--color-primary)}
+@media (max-width:720px){main{padding:14px}.al-header{display:block}.al-title{font-size:22px}table{font-size:12px}} :root{--color-primary:#1a4d8f;--color-accent:#f59e0b;--color-surface:#f8fafc;--color-danger:#dc2626;--color-success:#16a34a;--font-body:system-ui,-apple-system,Segoe UI,sans-serif;--font-code:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--space:8px;--radius:6px;} h2{margin:0 0 10px;font-size:17px}.al-filter{width:100%;margin-bottom:8px;padding:8px;border:1px solid var(--color-line);border-radius:var(--radius)}
+.al-progress{height:9px;background:#e2e8f0;border-radius:99px;overflow:hidden}.al-progress span{display:block;height:100%;background:var(--color-success)}
+.al-checklist{list-style:none;padding:0;margin:0}.al-checklist li{padding:5px 0}.status-blocked{color:var(--color-danger)}.status-skipped{color:#a16207}
+.al-code-line{display:block;white-space:pre}.al-line-no{display:inline-block;width:34px;color:#94a3b8;user-select:none}.tok{color:#93c5fd}
+.al-diff td:first-child{width:30px;text-align:center}.diff-add{background:#ecfdf5}.diff-del{background:#fef2f2}.diff-ctx{background:#fff}
+.al-timeline{border-left:2px solid var(--color-line);padding-left:12px}.al-timeline article{position:relative;margin:0 0 12px}.al-timeline article:before{content:"";position:absolute;left:-18px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--color-primary)}
+.al-compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.al-compare article{border:1px solid var(--color-line);border-radius:var(--radius);padding:10px}.al-compare .recommended{border-color:var(--color-success);background:#f0fdf4}
+.al-kanban{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.al-column{background:#f8fafc;border:1px solid var(--color-line);border-radius:var(--radius);padding:8px;min-height:120px}.al-card{background:#fff;border:1px solid var(--color-line);border-radius:var(--radius);padding:8px;margin:8px 0;cursor:grab}
+.al-copy textarea{width:100%;min-height:70px;margin-bottom:8px;border:1px solid var(--color-line);border-radius:var(--radius);padding:8px} </style></head><body><main data-artilens-artifact="incident"><div class="al-header"><div><h1 class="al-title">Incident Timeline</h1><p class="al-subtitle">Investigation timeline and hypothesis board.</p></div><span class="al-pill">ArtiLens</span></div><section class="al-panel" data-artilens="timeline" data-artilens-state="timeline"><h2>Timeline</h2><div class="al-timeline"><article data-type="note"><time>2026-07-04T14:58:08.435Z</time><strong>note</strong><p>Incident opened</p></article></div></section><section class="al-panel" data-artilens="charts" data-artilens-state="charts"><h2>Charts</h2><svg role="img" viewBox="0 0 520 220" width="100%" height="220" data-artilens="chart bar"><g><rect x="8" y="16" width="504" height="178" rx="3" fill="#1a4d8f"><title>open: 1</title></rect><text x="260" y="212" text-anchor="middle" font-size="10" fill="#64748b">open</text></g></svg></section><section class="al-panel" data-artilens="sortable-table" data-artilens-state="table"><h2>Table</h2><input class="al-filter" data-table-filter placeholder="Filter"><table data-sortable><thead><tr><th><button data-sort-key="Hypothesis">Hypothesis</button></th><th><button data-sort-key="Status">Status</button></th></tr></thead><tbody><tr><td>Unknown root cause</td><td>open</td></tr></tbody></table></section><section class="al-panel al-copy" data-artilens="copy-as-prompt"><h2>Copy as prompt</h2><textarea data-artilens-note placeholder="Optional note"></textarea><button data-copy-as-prompt>Copy state</button><output data-copy-status></output><script type="application/json" data-artilens-meta>{
+  &quot;artifact&quot;: &quot;incident&quot;,
+  &quot;url&quot;: null
+}</script></section></main>
+<script>
+(() => {
+  document.querySelectorAll('[data-sortable]').forEach(table => {
+    const filter = table.closest('section')?.querySelector('[data-table-filter]');
+    filter?.addEventListener('input', () => {
+      const q = filter.value.toLowerCase();
+      table.querySelectorAll('tbody tr').forEach(row => row.hidden = !row.textContent.toLowerCase().includes(q));
+    });
+    table.querySelectorAll('th button').forEach((button, index) => button.addEventListener('click', () => {
+      const tbody = table.querySelector('tbody');
+      const dir = button.getAttribute('data-sort-dir') === 'asc' ? -1 : 1;
+      button.setAttribute('data-sort-dir', dir === 1 ? 'asc' : 'desc');
+      [...tbody.querySelectorAll('tr')].sort((a,b) => {
+        const x = a.children[index].textContent.trim(), y = b.children[index].textContent.trim();
+        const nx = parseFloat(x.replace(/[,%\s]/g,'')), ny = parseFloat(y.replace(/[,%\s]/g,''));
+        const numeric = x !== '' && y !== '' && !isNaN(nx) && !isNaN(ny);
+        return (numeric ? nx - ny : x.localeCompare(y)) * dir;
+      }).forEach(row => tbody.appendChild(row));
+    }));
+  });
+  document.querySelectorAll('[data-copy-code]').forEach(button => button.addEventListener('click', async () => {
+    const code = button.parentElement.querySelector('code').innerText.replace(/^\s*\d+\s?/gm, '');
+    await navigator.clipboard.writeText(code);
+    button.textContent = 'Copied';
+  }));
+  let drag;
+  document.querySelectorAll('.al-card').forEach(card => {
+    card.addEventListener('dragstart', () => drag = card);
+    card.addEventListener('dragend', () => drag = null);
+  });
+  document.querySelectorAll('.al-column').forEach(column => {
+    column.addEventListener('dragover', event => event.preventDefault());
+    column.addEventListener('drop', () => { if (drag) column.appendChild(drag); });
+  });
+  document.querySelectorAll('[data-copy-as-prompt]').forEach(button => button.addEventListener('click', async () => {
+    const meta = JSON.parse(document.querySelector('[data-artilens-meta]')?.textContent || '{}');
+    const state = {};
+    document.querySelectorAll('[data-artilens-state]').forEach((node, index) => {
+      state[node.getAttribute('data-artilens-state') || index] = {
+        text: node.innerText.slice(0, 500),
+        checked: [...node.querySelectorAll('input[type=checkbox],input[type=radio]')].filter(i => i.checked).map(i => i.getAttribute('data-target') || i.value),
+        cards: [...node.querySelectorAll('[data-card]')].map(card => ({ id: card.getAttribute('data-card'), column: card.closest('[data-column]')?.getAttribute('data-column') }))
+      };
+    });
+    const changes = [...document.querySelectorAll('[data-change-op]')].map(node => ({ op: node.getAttribute('data-change-op'), target: node.getAttribute('data-target') || node.getAttribute('data-card'), value: node.checked ?? node.closest('[data-column]')?.getAttribute('data-column') })).filter(item => item.target);
+    const payload = { artilens: 1, artifact: meta.artifact, url: meta.url, captured_at: new Date().toISOString(), state, changes, note: document.querySelector('[data-artilens-note]')?.value || '' };
+    await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+    document.querySelector('[data-copy-status]').textContent = 'Copied protocol v1 JSON';
+  }));
+})();</script>
+</body></html>

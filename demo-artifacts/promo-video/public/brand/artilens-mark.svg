@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">ArtiLens mark</title>
+  <desc id="desc">A circular lens and compass mark with four coral directional blades and a central lens.</desc>
+  <defs>
+    <style>
+      :root {
+        --artilens-bg: #f6f8fb;
+        --artilens-line: #cdd7e3;
+        --artilens-accent: #ef5a34;
+      }
+    </style>
+  </defs>
+  <circle cx="256" cy="256" r="236.8" fill="none" stroke="var(--artilens-line)" stroke-width="19.2"/>
+  <g fill="var(--artilens-accent)" fill-opacity="0.22" stroke="var(--artilens-accent)" stroke-width="28.16" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M256 83.2 332.8 192 256 256Z"/>
+    <path d="M428.8 256 320 332.8 256 256Z"/>
+    <path d="M256 428.8 179.2 320 256 256Z"/>
+    <path d="M83.2 256 192 179.2 256 256Z"/>
+  </g>
+  <circle cx="256" cy="256" r="56.32" fill="var(--artilens-bg)" stroke="var(--artilens-accent)" stroke-width="28.16"/>
+</svg>

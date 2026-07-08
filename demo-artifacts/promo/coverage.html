@@ -1,0 +1,201 @@
+<title>ArtiLens · Coverage</title>
+<style>
+  :root{
+    --bg:#0e1217; --grid:#11161d; --panel:#151b23; --panel-2:#1a212b; --line:#232c38; --line-2:#2d3846;
+    --ink:#e9eef4; --ink-2:#9aa7b6; --ink-3:#697585; --accent:#ff7a52; --accent-2:#ff9169; --accent-dim:rgba(255,122,82,.14);
+    --good:#33b174; --mid:#8fbf3f; --warn:#d9a521; --crit:#e5604d;
+    --radius:14px;
+    --mono:ui-monospace,"Cascadia Code","SF Mono","Segoe UI Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: light){:root{
+    --bg:#f6f7f5; --grid:#eef0ec; --panel:#ffffff; --panel-2:#f4f6f3; --line:#e4e7e2; --line-2:#d5d9d3;
+    --ink:#161b21; --ink-2:#586472; --ink-3:#8b95a2; --accent:#e5552a; --accent-2:#e5552a; --accent-dim:rgba(229,85,42,.1);
+    --good:#1f9e6a; --mid:#6f9e26; --warn:#bf7815; --crit:#d24b34;}}
+  :root[data-theme="dark"]{--bg:#0e1217;--grid:#11161d;--panel:#151b23;--panel-2:#1a212b;--line:#232c38;--line-2:#2d3846;
+    --ink:#e9eef4;--ink-2:#9aa7b6;--ink-3:#697585;--accent:#ff7a52;--accent-2:#ff9169;--accent-dim:rgba(255,122,82,.14);
+    --good:#33b174;--mid:#8fbf3f;--warn:#d9a521;--crit:#e5604d;}
+  :root[data-theme="light"]{--bg:#f6f7f5;--grid:#eef0ec;--panel:#ffffff;--panel-2:#f4f6f3;--line:#e4e7e2;--line-2:#d5d9d3;
+    --ink:#161b21;--ink-2:#586472;--ink-3:#8b95a2;--accent:#e5552a;--accent-2:#e5552a;--accent-dim:rgba(229,85,42,.1);
+    --good:#1f9e6a;--mid:#6f9e26;--warn:#bf7815;--crit:#d24b34;}
+  *{box-sizing:border-box} body{margin:0}
+  .wrap{font-family:var(--sans); color:var(--ink); background:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:44px 44px; min-height:100vh; padding:28px 20px 56px; line-height:1.5; -webkit-font-smoothing:antialiased}
+  .page{max-width:1000px; margin:0 auto}
+  .mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+  .top{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px}
+  .brand{display:flex; align-items:center; gap:12px}
+  .mark{width:34px; height:34px; flex:0 0 auto}
+  .brand h1{font-size:15px; margin:0; letter-spacing:.02em; font-weight:650}
+  .brand .sub{font-family:var(--mono); font-size:11px; color:var(--ink-3); letter-spacing:.04em}
+  .crumbs{display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:var(--mono); font-size:11.5px; color:var(--ink-2)}
+  .chip{display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border:1px solid var(--line); border-radius:999px; background:var(--panel)}
+  .chip .dot{width:7px; height:7px; border-radius:50%}
+  .sep{color:var(--ink-3)}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin:0 0 6px}
+  .lede{font-size:26px; font-weight:660; letter-spacing:-.02em; margin:0 0 4px; text-wrap:balance}
+  .lede-sub{color:var(--ink-2); font-size:13.5px; margin:0 0 22px; max-width:64ch}
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-top:12px}
+  .panel h2{font-size:12px; font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--ink-2); margin:0 0 2px; display:flex; align-items:center; gap:8px}
+  .panel h2 .tag{margin-left:auto; font-size:10px; color:var(--ink-3); text-transform:none}
+  .panel .note{font-size:12px; color:var(--ink-3); margin:0 0 16px}
+
+  /* hero */
+  .hero{display:grid; grid-template-columns:auto 1fr; gap:24px; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px 24px}
+  .ring{position:relative; width:140px; height:140px}
+  .ring .lbl{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center}
+  .ring .lbl .num{font-family:var(--mono); font-size:32px; font-weight:600; line-height:1}
+  .ring .lbl .cap{font-family:var(--mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin-top:4px}
+  .herostats{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+  .herostats .s .v{font-family:var(--mono); font-size:22px; font-weight:600} .herostats .s .k{font-size:11px; color:var(--ink-3); font-family:var(--mono); text-transform:uppercase; letter-spacing:.06em; margin-top:3px}
+  .herostats .s .v.crit{color:var(--crit)}
+
+  /* heatmap */
+  .heat{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px}
+  .hcell{border-radius:9px; padding:12px 13px; border:1px solid var(--line); background:var(--panel-2); position:relative; overflow:hidden}
+  .hcell .fn{font-family:var(--mono); font-size:11px; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; direction:rtl; text-align:left}
+  .hcell .pc{font-family:var(--mono); font-size:20px; font-weight:600; margin-top:8px} .hcell .ln{font-family:var(--mono); font-size:10px; color:var(--ink-3); margin-top:2px}
+  .hcell::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px}
+  .hcell.g::before{background:var(--good)} .hcell.g .pc{color:var(--good)}
+  .hcell.m::before{background:var(--mid)} .hcell.m .pc{color:var(--mid)}
+  .hcell.w::before{background:var(--warn)} .hcell.w .pc{color:var(--warn)}
+  .hcell.c::before{background:var(--crit)} .hcell.c .pc{color:var(--crit)} .hcell.c{border-color:rgba(229,96,77,.4)}
+  .clegend{display:flex; gap:16px; flex-wrap:wrap; margin-top:15px; font-size:11.5px; color:var(--ink-2); font-family:var(--mono)}
+  .clegend .li{display:flex; align-items:center; gap:7px} .clegend .sw{width:11px; height:11px; border-radius:3px}
+
+  /* lowest table */
+  table{width:100%; border-collapse:collapse; font-size:12.5px}
+  th{text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-weight:500; padding:0 12px 9px; border-bottom:1px solid var(--line)}
+  td{padding:10px 12px; border-bottom:1px solid var(--line)} tr:last-child td{border-bottom:0}
+  td .fn{font-family:var(--mono); font-size:12px}
+  td.n{font-family:var(--mono); text-align:right; font-variant-numeric:tabular-nums}
+  .cbar{height:8px; border-radius:4px; background:var(--panel-2); overflow:hidden; min-width:120px; border:1px solid var(--line)}
+  .cbar span{display:block; height:100%; border-radius:4px}
+
+  .al-copy{border-style:dashed}
+  .al-copy textarea{width:100%; min-height:56px; resize:vertical; background:var(--panel-2); color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:10px 12px; font-family:var(--sans); font-size:13px; margin:4px 0 12px}
+  .al-copy button{font-family:var(--mono); font-size:12.5px; font-weight:600; color:#0e1217; background:var(--accent); border:0; border-radius:9px; padding:10px 18px; cursor:pointer}
+  .al-copy button:hover{background:var(--accent-2)}
+  .al-copy output{font-family:var(--mono); font-size:12px; color:var(--good); margin-left:12px}
+  .al-copy .note-txt{font-size:12px; color:var(--ink-3); margin:0 0 6px}
+  .foot{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:22px; padding-top:16px; border-top:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--ink-3)}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+  @media (max-width:760px){.hero{grid-template-columns:1fr}.herostats{grid-template-columns:repeat(3,1fr)}.lede{font-size:22px}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap"><div class="page">
+
+  <header class="top">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="18.5" stroke="var(--line-2)" stroke-width="1.5"/>
+        <g stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round">
+          <path d="M20 6.5 L26 15 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M33.5 20 L25 26 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M20 33.5 L14 25 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M6.5 20 L15 14 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+        </g>
+        <circle cx="20" cy="20" r="4.4" fill="var(--bg)" stroke="var(--accent)" stroke-width="2.2"/>
+      </svg>
+      <div><h1>ArtiLens</h1><div class="sub">/artilens:coverage</div></div>
+    </div>
+    <div class="crumbs">
+      <span class="chip"><span class="dot" style="background:var(--accent)"></span> orbit-analytics</span>
+      <span class="chip">vitest · lcov</span>
+      <span class="sep">·</span><span>14 files</span>
+    </div>
+  </header>
+
+  <p class="eyebrow">Test coverage</p>
+  <h2 class="lede">82.5% covered — the new streaming code is dragging it down</h2>
+  <p class="lede-sub">Overall coverage is healthy, but the freshly-added ingestion and SSE paths sit well below the line. Three files account for most of the gap.</p>
+
+  <section class="hero" data-artilens-state="total">
+    <div class="ring">
+      <svg viewBox="0 0 120 120" width="140" height="140">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="var(--panel-2)" stroke-width="11"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="var(--good)" stroke-width="11" stroke-linecap="round"
+          stroke-dasharray="269 327" transform="rotate(-90 60 60)"/>
+      </svg>
+      <div class="lbl"><div class="num mono">82.5%</div><div class="cap">Total</div></div>
+    </div>
+    <div class="herostats">
+      <div class="s"><div class="v mono">3,976</div><div class="k">Lines covered</div></div>
+      <div class="s"><div class="v mono">4,820</div><div class="k">Lines total</div></div>
+      <div class="s"><div class="v mono crit">3</div><div class="k">Files below 70%</div></div>
+      <div class="s"><div class="v mono">14</div><div class="k">Files measured</div></div>
+      <div class="s"><div class="v mono">844</div><div class="k">Lines uncovered</div></div>
+      <div class="s"><div class="v mono" style="color:var(--good)">6</div><div class="k">Files at 100%</div></div>
+    </div>
+  </section>
+
+  <section class="panel" data-artilens-state="heatmap">
+    <h2>Coverage heatmap <span class="tag">colored by band</span></h2>
+    <p class="note">Every measured file. The red stripe is where a reviewer should aim new tests.</p>
+    <div class="heat">
+      <div class="hcell c"><div class="fn">packages/api/src/routes/stream.ts</div><div class="pc mono">53.9%</div><div class="ln">41 / 76 lines</div></div>
+      <div class="hcell c"><div class="fn">packages/streaming/src/socket.ts</div><div class="pc mono">64.5%</div><div class="ln">138 / 214 lines</div></div>
+      <div class="hcell c"><div class="fn">packages/dashboard/src/LiveTiles.tsx</div><div class="pc mono">64.9%</div><div class="ln">96 / 148 lines</div></div>
+      <div class="hcell w"><div class="fn">packages/streaming/src/backpressure.ts</div><div class="pc mono">75.9%</div><div class="ln">44 / 58 lines</div></div>
+      <div class="hcell m"><div class="fn">packages/streaming/src/aggregator.ts</div><div class="pc mono">91.9%</div><div class="ln">171 / 186 lines</div></div>
+      <div class="hcell g"><div class="fn">packages/streaming/src/window.ts</div><div class="pc mono">95.7%</div><div class="ln">88 / 92 lines</div></div>
+      <div class="hcell g"><div class="fn">packages/core/src/registry.ts</div><div class="pc mono">95.5%</div><div class="ln">210 / 220 lines</div></div>
+      <div class="hcell g"><div class="fn">packages/dashboard/src/format.ts</div><div class="pc mono">97.5%</div><div class="ln">39 / 40 lines</div></div>
+      <div class="hcell g"><div class="fn">packages/core/src/ringBuffer.ts</div><div class="pc mono">100%</div><div class="ln">64 / 64 lines</div></div>
+      <div class="hcell g"><div class="fn">packages/core/src/transcript.ts</div><div class="pc mono">98.1%</div><div class="ln">312 / 318 lines</div></div>
+      <div class="hcell g"><div class="fn">packages/streaming/src/decode.ts</div><div class="pc mono">100%</div><div class="ln">47 / 47 lines</div></div>
+      <div class="hcell g"><div class="fn">packages/api/src/routes/health.ts</div><div class="pc mono">100%</div><div class="ln">18 / 18 lines</div></div>
+    </div>
+    <div class="clegend">
+      <span class="li"><span class="sw" style="background:var(--crit)"></span>&lt; 70% critical</span>
+      <span class="li"><span class="sw" style="background:var(--warn)"></span>70–80% low</span>
+      <span class="li"><span class="sw" style="background:var(--mid)"></span>80–95% ok</span>
+      <span class="li"><span class="sw" style="background:var(--good)"></span>≥ 95% strong</span>
+    </div>
+  </section>
+
+  <section class="panel" data-artilens-state="lowest">
+    <h2>Lowest covered <span class="tag">fix these first</span></h2>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>File</th><th style="text-align:right">Covered</th><th style="width:32%">Coverage</th><th style="text-align:right">Missing</th></tr></thead>
+      <tbody>
+        <tr><td><span class="fn">packages/api/src/routes/stream.ts</span></td><td class="n">41 / 76</td><td><div class="cbar"><span style="width:53.9%;background:var(--crit)"></span></div></td><td class="n">35</td></tr>
+        <tr><td><span class="fn">packages/streaming/src/socket.ts</span></td><td class="n">138 / 214</td><td><div class="cbar"><span style="width:64.5%;background:var(--crit)"></span></div></td><td class="n">76</td></tr>
+        <tr><td><span class="fn">packages/dashboard/src/LiveTiles.tsx</span></td><td class="n">96 / 148</td><td><div class="cbar"><span style="width:64.9%;background:var(--crit)"></span></div></td><td class="n">52</td></tr>
+        <tr><td><span class="fn">packages/streaming/src/backpressure.ts</span></td><td class="n">44 / 58</td><td><div class="cbar"><span style="width:75.9%;background:var(--warn)"></span></div></td><td class="n">14</td></tr>
+        <tr><td><span class="fn">packages/streaming/src/aggregator.ts</span></td><td class="n">171 / 186</td><td><div class="cbar"><span style="width:91.9%;background:var(--mid)"></span></div></td><td class="n">15</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="al-panel al-copy panel" data-artilens="copy-as-prompt">
+    <h2>Copy as prompt</h2>
+    <p class="note-txt">Send this coverage map to Claude Code as a protocol&nbsp;v1 prompt — e.g. "write tests for stream.ts to get it past 85%."</p>
+    <textarea data-artilens-note placeholder="Optional note — e.g. 'focus on the three red files, ignore the dashboard'"></textarea>
+    <div><button data-copy-as-prompt>Copy state</button><output data-copy-status></output></div>
+    <script type="application/json" data-artilens-meta>{"artifact":"coverage","url":null}</script>
+  </section>
+
+  <div class="foot"><span>ArtiLens · artilens.coverage.data/v1</span><span>82.5% total · 3,976 / 4,820 lines · from lcov</span></div>
+
+</div></div>
+
+<script>
+document.querySelectorAll('[data-copy-as-prompt]').forEach(button => button.addEventListener('click', async () => {
+  const meta = JSON.parse(document.querySelector('[data-artilens-meta]')?.textContent || '{}');
+  const state = {};
+  document.querySelectorAll('[data-artilens-state]').forEach((node, index) => {
+    state[node.getAttribute('data-artilens-state') || index] = {
+      text: node.innerText.slice(0, 500),
+      checked: [...node.querySelectorAll('input[type=checkbox],input[type=radio]')].filter(i => i.checked).map(i => i.getAttribute('data-target') || i.value),
+      cards: [...node.querySelectorAll('[data-card]')].map(card => ({ id: card.getAttribute('data-card'), column: card.closest('[data-column]')?.getAttribute('data-column') }))
+    };
+  });
+  const changes = [...document.querySelectorAll('[data-change-op]')].map(node => ({ op: node.getAttribute('data-change-op'), target: node.getAttribute('data-target') || node.getAttribute('data-card'), value: node.checked ?? node.closest('[data-column]')?.getAttribute('data-column') })).filter(item => item.target);
+  const payload = { artilens: 1, artifact: meta.artifact, url: meta.url, captured_at: new Date().toISOString(), state, changes, note: document.querySelector('[data-artilens-note]')?.value || '' };
+  await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+  document.querySelector('[data-copy-status]').textContent = 'Copied protocol v1 JSON';
+}));
+</script>

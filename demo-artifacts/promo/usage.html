@@ -1,0 +1,327 @@
+<title>ArtiLens · Session Usage</title>
+<style>
+  :root{
+    --bg:#0e1217; --grid:#11161d; --panel:#151b23; --panel-2:#1a212b;
+    --line:#232c38; --line-2:#2d3846;
+    --ink:#e9eef4; --ink-2:#9aa7b6; --ink-3:#697585;
+    --accent:#ff7a52; --accent-2:#ff9169; --accent-dim:rgba(255,122,82,.14);
+    --opus:#6377ee; --sonnet:#25a066; --fable:#c98812; --haiku:#1c95ad;
+    --good:#33b174; --warn:#d9a521; --crit:#e5604d;
+    --tok-1:#5a6b86; --tok-2:#7f93b4; --tok-3:#b06a45; --tok-4:#2b3646;
+    --radius:14px;
+    --mono:ui-monospace,"Cascadia Code","SF Mono","Segoe UI Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f6f7f5; --grid:#eef0ec; --panel:#ffffff; --panel-2:#f4f6f3;
+      --line:#e4e7e2; --line-2:#d5d9d3;
+      --ink:#161b21; --ink-2:#586472; --ink-3:#8b95a2;
+      --accent:#e5552a; --accent-2:#e5552a; --accent-dim:rgba(229,85,42,.1);
+      --opus:#5b6ee8; --sonnet:#1f9e6a; --fable:#b57d10; --haiku:#1897b2;
+      --tok-1:#8a9ab5; --tok-2:#5a6b86; --tok-3:#c06a3f; --tok-4:#d9dee6;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1217; --grid:#11161d; --panel:#151b23; --panel-2:#1a212b;
+    --line:#232c38; --line-2:#2d3846; --ink:#e9eef4; --ink-2:#9aa7b6; --ink-3:#697585;
+    --accent:#ff7a52; --accent-2:#ff9169; --accent-dim:rgba(255,122,82,.14);
+    --opus:#6377ee; --sonnet:#25a066; --fable:#c98812; --haiku:#1c95ad;
+    --tok-1:#5a6b86; --tok-2:#7f93b4; --tok-3:#b06a45; --tok-4:#2b3646;
+  }
+  :root[data-theme="light"]{
+    --bg:#f6f7f5; --grid:#eef0ec; --panel:#ffffff; --panel-2:#f4f6f3;
+    --line:#e4e7e2; --line-2:#d5d9d3; --ink:#161b21; --ink-2:#586472; --ink-3:#8b95a2;
+    --accent:#e5552a; --accent-2:#e5552a; --accent-dim:rgba(229,85,42,.1);
+    --opus:#5b6ee8; --sonnet:#1f9e6a; --fable:#b57d10; --haiku:#1897b2;
+    --tok-1:#8a9ab5; --tok-2:#5a6b86; --tok-3:#c06a3f; --tok-4:#d9dee6;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0}
+  .wrap{
+    font-family:var(--sans); color:var(--ink); background:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:44px 44px; background-position:center top;
+    min-height:100vh; padding:28px 20px 56px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{max-width:1060px; margin:0 auto}
+  .mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+  a{color:inherit}
+
+  /* header */
+  .top{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px}
+  .brand{display:flex; align-items:center; gap:12px}
+  .mark{width:34px; height:34px; flex:0 0 auto}
+  .brand h1{font-size:15px; margin:0; letter-spacing:.02em; font-weight:650}
+  .brand .sub{font-family:var(--mono); font-size:11px; color:var(--ink-3); letter-spacing:.04em}
+  .crumbs{display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:var(--mono); font-size:11.5px; color:var(--ink-2)}
+  .chip{display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border:1px solid var(--line); border-radius:999px; background:var(--panel)}
+  .chip .dot{width:7px; height:7px; border-radius:50%}
+  .sep{color:var(--ink-3)}
+
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin:0 0 6px}
+  .lede{font-size:26px; font-weight:660; letter-spacing:-.02em; margin:0 0 4px; text-wrap:balance}
+  .lede .cost{font-family:var(--mono); color:var(--ink)}
+  .lede-sub{color:var(--ink-2); font-size:13.5px; margin:0 0 24px; max-width:64ch}
+
+  /* KPI tiles */
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px}
+  .tile{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:15px 16px; position:relative; overflow:hidden}
+  .tile .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+  .tile .v{font-family:var(--mono); font-size:27px; font-weight:600; letter-spacing:-.01em; margin-top:7px; line-height:1}
+  .tile .m{font-size:11.5px; color:var(--ink-2); margin-top:8px}
+  .tile .m b{color:var(--good); font-weight:600}
+  .tile .m i{color:var(--crit); font-style:normal; font-weight:600}
+  .tile.hero .v{font-size:34px; color:var(--ink)}
+  .tile.hero::after{content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--accent)}
+
+  /* panels */
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 18px 16px; margin-top:12px}
+  .panel h2{font-size:12px; font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--ink-2); margin:0 0 2px; display:flex; align-items:center; gap:8px}
+  .panel .note{font-size:12px; color:var(--ink-3); margin:0 0 16px}
+  .panel h2 .tag{margin-left:auto; font-size:10px; color:var(--ink-3); letter-spacing:.02em; text-transform:none}
+
+  /* bar rows */
+  .bars{display:flex; flex-direction:column; gap:13px}
+  .bar-row{display:grid; grid-template-columns:132px 1fr auto; align-items:center; gap:14px}
+  .bar-lab{display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:550}
+  .bar-lab .sw{width:9px; height:9px; border-radius:2px; flex:0 0 auto}
+  .track{height:22px; background:var(--panel-2); border-radius:5px; overflow:hidden; border:1px solid var(--line)}
+  .fill{height:100%; border-radius:4px 5px 5px 4px; display:flex; align-items:center; min-width:3px}
+  .bar-val{font-family:var(--mono); font-size:12.5px; text-align:right; white-space:nowrap}
+  .bar-val .pct{color:var(--ink-3); font-size:11px; margin-left:7px}
+
+  /* stacked composition */
+  .stack{height:30px; border-radius:7px; overflow:hidden; display:flex; border:1px solid var(--line); background:var(--panel-2)}
+  .stack span{display:block; height:100%; border-right:2px solid var(--panel)}
+  .stack span:last-child{border-right:0}
+  .legend{display:flex; flex-wrap:wrap; gap:5px 18px; margin-top:14px}
+  .legend .li{display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-2)}
+  .legend .sw{width:10px; height:10px; border-radius:3px; flex:0 0 auto}
+  .legend .li b{color:var(--ink); font-family:var(--mono); font-weight:600; margin-left:2px}
+  .callout{margin-top:15px; padding:11px 13px; border-left:2px solid var(--accent); background:var(--accent-dim); border-radius:0 8px 8px 0; font-size:12.5px; color:var(--ink)}
+  .callout b{font-family:var(--mono)}
+
+  /* small share bars */
+  .mini{display:flex; flex-direction:column; gap:10px}
+  .mini-row{display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:center}
+  .mini-row .nm{font-size:12px; color:var(--ink)}
+  .mini-row .nm .src{color:var(--ink-3); font-family:var(--mono); font-size:10.5px; margin-left:6px}
+  .mini-row .pv{font-family:var(--mono); font-size:12px; color:var(--ink-2)}
+  .mini-track{grid-column:1/-1; height:6px; background:var(--panel-2); border-radius:3px; overflow:hidden}
+  .mini-fill{height:100%; border-radius:3px; background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+  .mini-fill.blue{background:linear-gradient(90deg,#3d6ad6,#5c86ec)}
+
+  /* table */
+  table{width:100%; border-collapse:collapse; font-size:12.5px}
+  th{text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-weight:500; padding:0 12px 9px; border-bottom:1px solid var(--line)}
+  td{padding:10px 12px; border-bottom:1px solid var(--line)}
+  tr:last-child td{border-bottom:0}
+  td.n{font-family:var(--mono); text-align:right; font-variant-numeric:tabular-nums}
+  td .tool{font-family:var(--mono); font-weight:550}
+  .microbar{display:inline-block; height:6px; border-radius:3px; background:var(--ink-3); opacity:.5; vertical-align:middle}
+
+  /* copy panel */
+  .al-copy{border-style:dashed}
+  .al-copy textarea{width:100%; min-height:60px; resize:vertical; background:var(--panel-2); color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:10px 12px; font-family:var(--sans); font-size:13px; margin:4px 0 12px}
+  .al-copy button{font-family:var(--mono); font-size:12.5px; font-weight:600; letter-spacing:.02em; color:#0e1217; background:var(--accent); border:0; border-radius:9px; padding:10px 18px; cursor:pointer}
+  .al-copy button:hover{background:var(--accent-2)}
+  .al-copy output{font-family:var(--mono); font-size:12px; color:var(--good); margin-left:12px}
+  .al-copy .note-txt{font-size:12px; color:var(--ink-3); margin:0 0 6px}
+
+  .foot{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:22px; padding-top:16px; border-top:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--ink-3)}
+
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+  @media (max-width:760px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid2{grid-template-columns:1fr}
+    .bar-row{grid-template-columns:104px 1fr auto; gap:10px}
+    .lede{font-size:22px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<div class="page">
+
+  <header class="top">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="18.5" stroke="var(--line-2)" stroke-width="1.5"/>
+        <g stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round">
+          <path d="M20 6.5 L26 15 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M33.5 20 L25 26 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M20 33.5 L14 25 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M6.5 20 L15 14 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+        </g>
+        <circle cx="20" cy="20" r="4.4" fill="var(--bg)" stroke="var(--accent)" stroke-width="2.2"/>
+      </svg>
+      <div>
+        <h1>ArtiLens</h1>
+        <div class="sub">/artilens:usage</div>
+      </div>
+    </div>
+    <div class="crumbs">
+      <span class="chip"><span class="dot" style="background:var(--accent)"></span> orbit-analytics</span>
+      <span class="sep">/</span>
+      <span class="chip">feat/streaming-metrics</span>
+      <span class="sep">·</span>
+      <span>Jul 7, 2026 · 14:52</span>
+    </div>
+  </header>
+
+  <p class="eyebrow">Session usage</p>
+  <h2 class="lede">This session cost <span class="cost">$15.86</span> across 4 models</h2>
+  <p class="lede-sub">A 2h 47m working session on the streaming-metrics feature. Opus 4.8 carried the reasoning load; 89% of all tokens were cache reads — the cost of keeping a long context warm, not fresh generation.</p>
+
+  <section class="kpis" data-artilens-state="summary">
+    <div class="tile hero">
+      <div class="k">Total cost</div>
+      <div class="v mono">$15.86</div>
+      <div class="m">Metered · not an estimate</div>
+    </div>
+    <div class="tile">
+      <div class="k">Wall duration</div>
+      <div class="v mono">2h 47m</div>
+      <div class="m">486 messages exchanged</div>
+    </div>
+    <div class="tile">
+      <div class="k">Code changes</div>
+      <div class="v mono">+1,284</div>
+      <div class="m"><b>+1,284</b> added · <i>−397</i> removed</div>
+    </div>
+    <div class="tile">
+      <div class="k">Tokens moved</div>
+      <div class="v mono">11.79M</div>
+      <div class="m">154.5k in · 311.3k out · 11.3M cached</div>
+    </div>
+  </section>
+
+  <section class="panel" data-artilens-state="cost-by-model">
+    <h2>Cost by model <span class="tag">USD · share of $15.86</span></h2>
+    <p class="note">Where the money went. Opus 4.8 handled planning and the hard edits; lighter models absorbed routine work.</p>
+    <div class="bars">
+      <div class="bar-row">
+        <div class="bar-lab"><span class="sw" style="background:var(--opus)"></span>Opus 4.8</div>
+        <div class="track"><div class="fill" style="width:100%;background:var(--opus)"></div></div>
+        <div class="bar-val">$10.46<span class="pct">66.0%</span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lab"><span class="sw" style="background:var(--sonnet)"></span>Sonnet 5</div>
+        <div class="track"><div class="fill" style="width:31.6%;background:var(--sonnet)"></div></div>
+        <div class="bar-val">$3.31<span class="pct">20.9%</span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lab"><span class="sw" style="background:var(--fable)"></span>Fable 5</div>
+        <div class="track"><div class="fill" style="width:16.1%;background:var(--fable)"></div></div>
+        <div class="bar-val">$1.68<span class="pct">10.6%</span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-lab"><span class="sw" style="background:var(--haiku)"></span>Haiku 4.5</div>
+        <div class="track"><div class="fill" style="width:3.9%;background:var(--haiku)"></div></div>
+        <div class="bar-val">$0.41<span class="pct">2.6%</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" data-artilens-state="token-composition">
+    <h2>Where the tokens went <span class="tag">11.79M total</span></h2>
+    <p class="note">Every token type, to scale. The story of a long session is caching.</p>
+    <div class="stack" role="img" aria-label="Token composition: 89.2% cache read, 6.8% cache write, 2.6% output, 1.3% input">
+      <span style="width:1.3%;background:var(--tok-2)" title="Input 1.3%"></span>
+      <span style="width:2.6%;background:var(--tok-3)" title="Output 2.6%"></span>
+      <span style="width:6.8%;background:var(--tok-1)" title="Cache write 6.8%"></span>
+      <span style="width:89.2%;background:var(--tok-4)" title="Cache read 89.2%"></span>
+    </div>
+    <div class="legend">
+      <span class="li"><span class="sw" style="background:var(--tok-2)"></span>Input <b>154.5k</b></span>
+      <span class="li"><span class="sw" style="background:var(--tok-3)"></span>Output <b>311.3k</b></span>
+      <span class="li"><span class="sw" style="background:var(--tok-1)"></span>Cache write <b>806.0k</b></span>
+      <span class="li"><span class="sw" style="background:var(--tok-4)"></span>Cache read <b>10.52M</b></span>
+    </div>
+    <p class="callout"><b>89.2%</b> of tokens were cache reads. Long sessions stay cheap per-token but the reads add up — <b>/compact</b> mid-task when a thread is done to shrink the warm context.</p>
+  </section>
+
+  <div class="grid2">
+    <section class="panel" data-artilens-state="mcp-load">
+      <h2>MCP server load</h2>
+      <p class="note">Share of tool-result bytes returned into context.</p>
+      <div class="mini">
+        <div class="mini-row"><span class="nm">context-mode <span class="src">plugin</span></span><span class="pv">31%</span><div class="mini-track"><div class="mini-fill blue" style="width:100%"></div></div></div>
+        <div class="mini-row"><span class="nm">chrome-devtools</span><span class="pv">14%</span><div class="mini-track"><div class="mini-fill blue" style="width:45%"></div></div></div>
+        <div class="mini-row"><span class="nm">context7</span><span class="pv">9%</span><div class="mini-track"><div class="mini-fill blue" style="width:29%"></div></div></div>
+        <div class="mini-row"><span class="nm">playwright</span><span class="pv">5%</span><div class="mini-track"><div class="mini-fill blue" style="width:16%"></div></div></div>
+        <div class="mini-row"><span class="nm">ccd_session</span><span class="pv">3%</span><div class="mini-track"><div class="mini-fill blue" style="width:10%"></div></div></div>
+      </div>
+    </section>
+
+    <section class="panel" data-artilens-state="skill-share">
+      <h2>Skill usage share</h2>
+      <p class="note">Share of tool bytes attributed to each skill.</p>
+      <div class="mini">
+        <div class="mini-row"><span class="nm">superpowers:executing-plans</span><span class="pv">18%</span><div class="mini-track"><div class="mini-fill" style="width:100%"></div></div></div>
+        <div class="mini-row"><span class="nm">superpowers:writing-plans</span><span class="pv">11%</span><div class="mini-track"><div class="mini-fill" style="width:61%"></div></div></div>
+        <div class="mini-row"><span class="nm">code-review</span><span class="pv">7%</span><div class="mini-track"><div class="mini-fill" style="width:39%"></div></div></div>
+        <div class="mini-row"><span class="nm">artilens:usage</span><span class="pv">5%</span><div class="mini-track"><div class="mini-fill" style="width:28%"></div></div></div>
+        <div class="mini-row"><span class="nm">artifact-design</span><span class="pv">4%</span><div class="mini-track"><div class="mini-fill" style="width:22%"></div></div></div>
+        <div class="mini-row"><span class="nm">superpowers:brainstorming</span><span class="pv">3%</span><div class="mini-track"><div class="mini-fill" style="width:17%"></div></div></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel" data-artilens-state="tool-calls">
+    <h2>Tool calls <span class="tag">top 6 of 41 tools</span></h2>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Tool</th><th style="text-align:right">Calls</th><th style="width:34%">Output volume</th><th style="text-align:right">Bytes out</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tool">Bash</span></td><td class="n">142</td><td><span class="microbar" style="width:100%;background:var(--accent);opacity:.75"></span></td><td class="n">2.14 MB</td></tr>
+        <tr><td><span class="tool">Read</span></td><td class="n">98</td><td><span class="microbar" style="width:71%"></span></td><td class="n">1.52 MB</td></tr>
+        <tr><td><span class="tool">Edit</span></td><td class="n">76</td><td><span class="microbar" style="width:22%"></span></td><td class="n">468 KB</td></tr>
+        <tr><td><span class="tool">Grep</span></td><td class="n">54</td><td><span class="microbar" style="width:38%"></span></td><td class="n">812 KB</td></tr>
+        <tr><td><span class="tool">Task</span></td><td class="n">14</td><td><span class="microbar" style="width:31%"></span></td><td class="n">664 KB</td></tr>
+        <tr><td><span class="tool">TodoWrite</span></td><td class="n">11</td><td><span class="microbar" style="width:6%"></span></td><td class="n">128 KB</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section class="al-panel al-copy panel" data-artilens="copy-as-prompt">
+    <h2>Copy as prompt</h2>
+    <p class="note-txt">Snapshot this usage view as a protocol&nbsp;v1 JSON prompt — paste it back into Claude Code to act on the numbers.</p>
+    <textarea data-artilens-note placeholder="Optional note — e.g. 'why is Fable spend so high this session?'"></textarea>
+    <div>
+      <button data-copy-as-prompt>Copy state</button>
+      <output data-copy-status></output>
+    </div>
+    <script type="application/json" data-artilens-meta>{"artifact":"usage","url":null}</script>
+  </section>
+
+  <div class="foot">
+    <span>ArtiLens · artilens.usage.data/v1</span>
+    <span>Scrubbed aggregates · no raw transcript leaves your machine</span>
+  </div>
+
+</div>
+</div>
+
+<script>
+document.querySelectorAll('[data-copy-as-prompt]').forEach(button => button.addEventListener('click', async () => {
+  const meta = JSON.parse(document.querySelector('[data-artilens-meta]')?.textContent || '{}');
+  const state = {};
+  document.querySelectorAll('[data-artilens-state]').forEach((node, index) => {
+    state[node.getAttribute('data-artilens-state') || index] = {
+      text: node.innerText.slice(0, 500),
+      checked: [...node.querySelectorAll('input[type=checkbox],input[type=radio]')].filter(i => i.checked).map(i => i.getAttribute('data-target') || i.value),
+      cards: [...node.querySelectorAll('[data-card]')].map(card => ({ id: card.getAttribute('data-card'), column: card.closest('[data-column]')?.getAttribute('data-column') }))
+    };
+  });
+  const changes = [...document.querySelectorAll('[data-change-op]')].map(node => ({ op: node.getAttribute('data-change-op'), target: node.getAttribute('data-target') || node.getAttribute('data-card'), value: node.checked ?? node.closest('[data-column]')?.getAttribute('data-column') })).filter(item => item.target);
+  const payload = { artilens: 1, artifact: meta.artifact, url: meta.url, captured_at: new Date().toISOString(), state, changes, note: document.querySelector('[data-artilens-note]')?.value || '' };
+  await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+  document.querySelector('[data-copy-status]').textContent = 'Copied protocol v1 JSON';
+}));
+</script>

@@ -1,0 +1,220 @@
+<title>ArtiLens · Git Working Tree</title>
+<style>
+  :root{
+    --bg:#0e1217; --grid:#11161d; --panel:#151b23; --panel-2:#1a212b; --line:#232c38; --line-2:#2d3846;
+    --ink:#e9eef4; --ink-2:#9aa7b6; --ink-3:#697585; --accent:#ff7a52; --accent-2:#ff9169; --accent-dim:rgba(255,122,82,.14);
+    --good:#33b174; --warn:#d9a521; --crit:#e5604d;
+    --add:#2fae6b; --del:#e5604d;
+    --radius:14px;
+    --mono:ui-monospace,"Cascadia Code","SF Mono","Segoe UI Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: light){:root{
+    --bg:#f6f7f5; --grid:#eef0ec; --panel:#ffffff; --panel-2:#f4f6f3; --line:#e4e7e2; --line-2:#d5d9d3;
+    --ink:#161b21; --ink-2:#586472; --ink-3:#8b95a2; --accent:#e5552a; --accent-2:#e5552a; --accent-dim:rgba(229,85,42,.1);
+    --add:#1f9e6a; --del:#d24b34;}}
+  :root[data-theme="dark"]{--bg:#0e1217;--grid:#11161d;--panel:#151b23;--panel-2:#1a212b;--line:#232c38;--line-2:#2d3846;
+    --ink:#e9eef4;--ink-2:#9aa7b6;--ink-3:#697585;--accent:#ff7a52;--accent-2:#ff9169;--accent-dim:rgba(255,122,82,.14);--add:#2fae6b;--del:#e5604d;}
+  :root[data-theme="light"]{--bg:#f6f7f5;--grid:#eef0ec;--panel:#ffffff;--panel-2:#f4f6f3;--line:#e4e7e2;--line-2:#d5d9d3;
+    --ink:#161b21;--ink-2:#586472;--ink-3:#8b95a2;--accent:#e5552a;--accent-2:#e5552a;--accent-dim:rgba(229,85,42,.1);--add:#1f9e6a;--del:#d24b34;}
+  *{box-sizing:border-box} body{margin:0}
+  .wrap{font-family:var(--sans); color:var(--ink); background:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:44px 44px; min-height:100vh; padding:28px 20px 56px; line-height:1.5; -webkit-font-smoothing:antialiased}
+  .page{max-width:1000px; margin:0 auto}
+  .mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+  .top{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px}
+  .brand{display:flex; align-items:center; gap:12px}
+  .mark{width:34px; height:34px; flex:0 0 auto}
+  .brand h1{font-size:15px; margin:0; letter-spacing:.02em; font-weight:650}
+  .brand .sub{font-family:var(--mono); font-size:11px; color:var(--ink-3); letter-spacing:.04em}
+  .crumbs{display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:var(--mono); font-size:11.5px; color:var(--ink-2)}
+  .chip{display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border:1px solid var(--line); border-radius:999px; background:var(--panel)}
+  .chip .dot{width:7px; height:7px; border-radius:50%}
+  .sep{color:var(--ink-3)}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin:0 0 6px}
+  .lede{font-size:26px; font-weight:660; letter-spacing:-.02em; margin:0 0 4px; text-wrap:balance}
+  .lede-sub{color:var(--ink-2); font-size:13.5px; margin:0 0 22px; max-width:64ch}
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-top:12px}
+  .panel h2{font-size:12px; font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--ink-2); margin:0 0 2px; display:flex; align-items:center; gap:8px}
+  .panel h2 .tag{margin-left:auto; font-size:10px; color:var(--ink-3); text-transform:none}
+  .panel .note{font-size:12px; color:var(--ink-3); margin:0 0 16px}
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+  .tile{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:15px 16px; position:relative; overflow:hidden}
+  .tile .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+  .tile .v{font-family:var(--mono); font-size:26px; font-weight:600; margin-top:7px; line-height:1}
+  .tile .m{font-size:11.5px; color:var(--ink-2); margin-top:8px}
+  .tile.crit::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--crit)}
+
+  /* churn split bar */
+  .churnbar{display:flex; height:12px; border-radius:6px; overflow:hidden; margin:2px 0 0; border:1px solid var(--line)}
+  .churnbar .a{background:var(--add)} .churnbar .d{background:var(--del)}
+
+  table{width:100%; border-collapse:collapse; font-size:12.5px}
+  th{text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-weight:500; padding:0 12px 9px; border-bottom:1px solid var(--line)}
+  td{padding:11px 12px; border-bottom:1px solid var(--line); vertical-align:top} tr:last-child td{border-bottom:0}
+  td .path{font-family:var(--mono); font-size:12px} td .reason{font-size:11px; color:var(--ink-3); margin-top:3px}
+  td .st{font-family:var(--mono); font-size:10px; font-weight:700; width:24px; display:inline-block; text-align:center; border-radius:4px; margin-right:8px}
+  td .st.M{color:var(--warn); background:rgba(217,165,33,.12)} td .st.A{color:var(--add); background:rgba(47,174,107,.12)} td .st.U{color:var(--ink-2); background:var(--panel-2)}
+  /* churn cell with mini split */
+  td.churn{white-space:nowrap; font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:right}
+  td.churn .a{color:var(--add)} td.churn .d{color:var(--del); margin-left:8px}
+  .rk{display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:600; letter-spacing:.04em; padding:2px 8px; border-radius:5px; text-transform:uppercase}
+  .rk.high{color:var(--crit); background:rgba(229,96,77,.1)} .rk.medium{color:var(--warn); background:rgba(217,165,33,.12)} .rk.low{color:var(--ink-3); background:var(--panel-2)}
+  .heat{width:34px; height:14px; border-radius:4px; display:inline-block; vertical-align:middle}
+
+  .callout{margin-top:0; padding:12px 14px; border-left:2px solid var(--warn); background:rgba(217,165,33,.1); border-radius:0 8px 8px 0; font-size:12.5px}
+  .callout b{font-family:var(--mono)} .callout ul{margin:8px 0 0; padding-left:18px} .callout li{margin:5px 0; color:var(--ink-2)}
+  .grid2{display:grid; grid-template-columns:1.4fr 1fr; gap:12px; margin-top:12px}
+  .commits{display:flex; flex-direction:column; gap:2px}
+  .cm{display:grid; grid-template-columns:auto 1fr; gap:12px; padding:8px 0; border-bottom:1px solid var(--line); font-size:12.5px} .cm:last-child{border-bottom:0}
+  .cm .h{font-family:var(--mono); font-size:11px; color:var(--accent-2)}
+
+  .al-copy{border-style:dashed}
+  .al-copy textarea{width:100%; min-height:56px; resize:vertical; background:var(--panel-2); color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:10px 12px; font-family:var(--sans); font-size:13px; margin:4px 0 12px}
+  .al-copy button{font-family:var(--mono); font-size:12.5px; font-weight:600; color:#0e1217; background:var(--accent); border:0; border-radius:9px; padding:10px 18px; cursor:pointer}
+  .al-copy button:hover{background:var(--accent-2)}
+  .al-copy output{font-family:var(--mono); font-size:12px; color:var(--good); margin-left:12px}
+  .al-copy .note-txt{font-size:12px; color:var(--ink-3); margin:0 0 6px}
+  .foot{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:22px; padding-top:16px; border-top:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--ink-3)}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+  @media (max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.lede{font-size:22px}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap"><div class="page">
+
+  <header class="top">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="18.5" stroke="var(--line-2)" stroke-width="1.5"/>
+        <g stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round">
+          <path d="M20 6.5 L26 15 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M33.5 20 L25 26 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M20 33.5 L14 25 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M6.5 20 L15 14 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+        </g>
+        <circle cx="20" cy="20" r="4.4" fill="var(--bg)" stroke="var(--accent)" stroke-width="2.2"/>
+      </svg>
+      <div><h1>ArtiLens</h1><div class="sub">/artilens:git</div></div>
+    </div>
+    <div class="crumbs">
+      <span class="chip"><span class="dot" style="background:var(--accent)"></span> orbit-analytics</span>
+      <span class="chip">feat/streaming-metrics</span>
+      <span class="sep">·</span><span>a3f9c1d2 · dirty</span>
+    </div>
+  </header>
+
+  <p class="eyebrow">Working tree</p>
+  <h2 class="lede">8 uncommitted files — one you'll want to look at</h2>
+  <p class="lede-sub">The state of your working tree right now, ranked by risk before you stage. Most is routine tuning of the aggregator; the lockfile churn is the one to eyeball.</p>
+
+  <section class="kpis" data-artilens-state="summary">
+    <div class="tile"><div class="k">Changed files</div><div class="v mono">8</div><div class="m">7 modified · 1 untracked</div></div>
+    <div class="tile"><div class="k">Net lines</div><div class="v mono"><span style="color:var(--add)">+156</span></div><div class="m"><span style="color:var(--add)">+156</span> / <span style="color:var(--del)">−26</span></div></div>
+    <div class="tile"><div class="k">Staged</div><div class="v mono">0</div><div class="m">nothing staged yet</div></div>
+    <div class="tile crit"><div class="k">Risk points</div><div class="v mono">1</div><div class="m">1 high · 2 medium</div></div>
+  </section>
+
+  <section class="panel" data-artilens-state="files">
+    <h2>Changed files <span class="tag">git status · porcelain</span></h2>
+    <p class="note">Heat column reflects risk; reasons come from churn size, test pairing and lockfile detection.</p>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th></th><th>File</th><th style="text-align:right">Churn</th><th>Risk</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="heat" style="background:var(--crit)"></span></td>
+          <td><span class="st M">M</span><span class="path">pnpm-lock.yaml</span><div class="reason">Dependency lockfile — verify against a clean install</div></td>
+          <td class="churn"><span class="a">+18</span><span class="d">−6</span></td><td><span class="rk high">High</span></td>
+        </tr>
+        <tr>
+          <td><span class="heat" style="background:var(--warn)"></span></td>
+          <td><span class="st M">M</span><span class="path">packages/streaming/src/aggregator.ts</span><div class="reason">Source without paired test change</div></td>
+          <td class="churn"><span class="a">+38</span><span class="d">−12</span></td><td><span class="rk medium">Medium</span></td>
+        </tr>
+        <tr>
+          <td><span class="heat" style="background:var(--warn)"></span></td>
+          <td><span class="st M">M</span><span class="path">packages/dashboard/src/LiveTiles.tsx</span><div class="reason">Source without paired test change</div></td>
+          <td class="churn"><span class="a">+21</span><span class="d">−4</span></td><td><span class="rk medium">Medium</span></td>
+        </tr>
+        <tr>
+          <td><span class="heat" style="background:var(--line-2)"></span></td>
+          <td><span class="st M">M</span><span class="path">packages/streaming/src/socket.ts</span></td>
+          <td class="churn"><span class="a">+9</span><span class="d">−2</span></td><td><span class="rk low">Low</span></td>
+        </tr>
+        <tr>
+          <td><span class="heat" style="background:var(--line-2)"></span></td>
+          <td><span class="st U">??</span><span class="path">packages/streaming/test/backpressure.test.ts</span><div class="reason">Untracked test — good, this pairs the source change</div></td>
+          <td class="churn"><span class="a">+64</span><span class="d">−0</span></td><td><span class="rk low">Low</span></td>
+        </tr>
+        <tr>
+          <td><span class="heat" style="background:var(--line-2)"></span></td>
+          <td><span class="st M">M</span><span class="path">.env.example</span></td>
+          <td class="churn"><span class="a">+2</span><span class="d">−0</span></td><td><span class="rk low">Low</span></td>
+        </tr>
+        <tr>
+          <td><span class="heat" style="background:var(--line-2)"></span></td>
+          <td><span class="st M">M</span><span class="path">README.md</span></td>
+          <td class="churn"><span class="a">+4</span><span class="d">−1</span></td><td><span class="rk low">Low</span></td>
+        </tr>
+        <tr>
+          <td><span class="heat" style="background:var(--line-2)"></span></td>
+          <td><span class="st M">M</span><span class="path">packages/dashboard/src/theme.css</span></td>
+          <td class="churn"><span class="a">+0</span><span class="d">−1</span></td><td><span class="rk low">Low</span></td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <div class="grid2">
+    <section class="panel" style="margin-top:0" data-artilens-state="risk">
+      <h2>Notable risk</h2>
+      <p class="callout">
+        <b>1 high, 2 medium.</b>
+        <ul>
+          <li><b>pnpm-lock.yaml</b> changed on its own — run <b>pnpm install --frozen-lockfile</b> to confirm it matches package.json before committing.</li>
+          <li><b>aggregator.ts</b> and <b>LiveTiles.tsx</b> changed without a matching test edit. The new <b>backpressure.test.ts</b> covers socket, not these two.</li>
+        </ul>
+      </p>
+    </section>
+
+    <section class="panel" style="margin-top:0" data-artilens-state="commits">
+      <h2>Recent commits</h2>
+      <p class="note">Last 3 on this branch.</p>
+      <div class="commits">
+        <div class="cm"><span class="h">a3f9c1d</span><span>Merge main into feat/streaming-metrics</span></div>
+        <div class="cm"><span class="h">e71b0a4</span><span>fix: reconnect dashboard socket on drop</span></div>
+        <div class="cm"><span class="h">c02d9f8</span><span>perf: batch flush every 250ms</span></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="al-panel al-copy panel" data-artilens="copy-as-prompt">
+    <h2>Copy as prompt</h2>
+    <p class="note-txt">Hand this working-tree state to Claude Code as a protocol&nbsp;v1 prompt — e.g. "stage everything except the lockfile and write a commit message."</p>
+    <textarea data-artilens-note placeholder="Optional note — e.g. 'group these into two logical commits'"></textarea>
+    <div><button data-copy-as-prompt>Copy state</button><output data-copy-status></output></div>
+    <script type="application/json" data-artilens-meta>{"artifact":"git","url":null}</script>
+  </section>
+
+  <div class="foot"><span>ArtiLens · artilens.git.data/v1</span><span>Git Working Tree · feat/streaming-metrics@a3f9c1d2</span></div>
+
+</div></div>
+
+<script>
+document.querySelectorAll('[data-copy-as-prompt]').forEach(button => button.addEventListener('click', async () => {
+  const meta = JSON.parse(document.querySelector('[data-artilens-meta]')?.textContent || '{}');
+  const state = {};
+  document.querySelectorAll('[data-artilens-state]').forEach((node, index) => {
+    state[node.getAttribute('data-artilens-state') || index] = {
+      text: node.innerText.slice(0, 500),
+      checked: [...node.querySelectorAll('input[type=checkbox],input[type=radio]')].filter(i => i.checked).map(i => i.getAttribute('data-target') || i.value),
+      cards: [...node.querySelectorAll('[data-card]')].map(card => ({ id: card.getAttribute('data-card'), column: card.closest('[data-column]')?.getAttribute('data-column') }))
+    };
+  });
+  const changes = [...document.querySelectorAll('[data-change-op]')].map(node => ({ op: node.getAttribute('data-change-op'), target: node.getAttribute('data-target') || node.getAttribute('data-card'), value: node.checked ?? node.closest('[data-column]')?.getAttribute('data-column') })).filter(item => item.target);
+  const payload = { artilens: 1, artifact: meta.artifact, url: meta.url, captured_at: new Date().toISOString(), state, changes, note: document.querySelector('[data-artilens-note]')?.value || '' };
+  await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+  document.querySelector('[data-copy-status]').textContent = 'Copied protocol v1 JSON';
+}));
+</script>

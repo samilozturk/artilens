@@ -1,0 +1,188 @@
+<title>ArtiLens · Todos</title>
+<style>
+  :root{
+    --bg:#0e1217; --grid:#11161d; --panel:#151b23; --panel-2:#1a212b; --line:#232c38; --line-2:#2d3846;
+    --ink:#e9eef4; --ink-2:#9aa7b6; --ink-3:#697585; --accent:#ff7a52; --accent-2:#ff9169; --accent-dim:rgba(255,122,82,.14);
+    --good:#33b174; --warn:#d9a521; --crit:#e5604d; --todo:#3d84c4;
+    --radius:14px;
+    --mono:ui-monospace,"Cascadia Code","SF Mono","Segoe UI Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: light){:root{
+    --bg:#f6f7f5; --grid:#eef0ec; --panel:#ffffff; --panel-2:#f4f6f3; --line:#e4e7e2; --line-2:#d5d9d3;
+    --ink:#161b21; --ink-2:#586472; --ink-3:#8b95a2; --accent:#e5552a; --accent-2:#e5552a; --accent-dim:rgba(229,85,42,.1);
+    --good:#1f9e6a; --warn:#bf7815; --crit:#d24b34; --todo:#2f6fb0;}}
+  :root[data-theme="dark"]{--bg:#0e1217;--grid:#11161d;--panel:#151b23;--panel-2:#1a212b;--line:#232c38;--line-2:#2d3846;
+    --ink:#e9eef4;--ink-2:#9aa7b6;--ink-3:#697585;--accent:#ff7a52;--accent-2:#ff9169;--accent-dim:rgba(255,122,82,.14);
+    --good:#33b174;--warn:#d9a521;--crit:#e5604d;--todo:#3d84c4;}
+  :root[data-theme="light"]{--bg:#f6f7f5;--grid:#eef0ec;--panel:#ffffff;--panel-2:#f4f6f3;--line:#e4e7e2;--line-2:#d5d9d3;
+    --ink:#161b21;--ink-2:#586472;--ink-3:#8b95a2;--accent:#e5552a;--accent-2:#e5552a;--accent-dim:rgba(229,85,42,.1);
+    --good:#1f9e6a;--warn:#bf7815;--crit:#d24b34;--todo:#2f6fb0;}
+  *{box-sizing:border-box} body{margin:0}
+  .wrap{font-family:var(--sans); color:var(--ink); background:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:44px 44px; min-height:100vh; padding:28px 20px 56px; line-height:1.5; -webkit-font-smoothing:antialiased}
+  .page{max-width:1060px; margin:0 auto}
+  .mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+  .top{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px}
+  .brand{display:flex; align-items:center; gap:12px}
+  .mark{width:34px; height:34px; flex:0 0 auto}
+  .brand h1{font-size:15px; margin:0; letter-spacing:.02em; font-weight:650}
+  .brand .sub{font-family:var(--mono); font-size:11px; color:var(--ink-3); letter-spacing:.04em}
+  .crumbs{display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:var(--mono); font-size:11.5px; color:var(--ink-2)}
+  .chip{display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border:1px solid var(--line); border-radius:999px; background:var(--panel)}
+  .chip .dot{width:7px; height:7px; border-radius:50%}
+  .sep{color:var(--ink-3)}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin:0 0 6px}
+  .lede{font-size:26px; font-weight:660; letter-spacing:-.02em; margin:0 0 4px; text-wrap:balance}
+  .lede-sub{color:var(--ink-2); font-size:13.5px; margin:0 0 22px; max-width:64ch}
+
+  /* progress strip */
+  .prog{display:flex; align-items:center; gap:16px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:15px 18px; flex-wrap:wrap}
+  .progbar{flex:1; min-width:200px; height:12px; border-radius:6px; overflow:hidden; display:flex; border:1px solid var(--line); background:var(--panel-2)}
+  .progbar span{display:block; height:100%; border-right:2px solid var(--panel)} .progbar span:last-child{border-right:0}
+  .counts{display:flex; gap:18px; flex-wrap:wrap; font-family:var(--mono); font-size:12px}
+  .counts .c{display:flex; align-items:center; gap:7px} .counts .c .sw{width:10px; height:10px; border-radius:3px}
+  .counts .c b{font-weight:600} .counts .c .lab{color:var(--ink-2)}
+
+  /* board */
+  .board{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:12px; align-items:start}
+  .col{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:14px}
+  .col > h2{font-size:12px; font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase; margin:0 0 12px; display:flex; align-items:center; gap:8px; color:var(--ink-2)}
+  .col > h2 .n{margin-left:auto; font-size:11px; color:var(--ink-3)}
+  .col > h2 .dot{width:8px; height:8px; border-radius:50%}
+  .cards{display:flex; flex-direction:column; gap:9px}
+  .card{background:var(--panel-2); border:1px solid var(--line); border-radius:10px; padding:11px 12px; display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start}
+  .card.done{border-left:3px solid var(--good)} .card.todo{border-left:3px solid var(--todo)} .card.skip{border-left:3px solid var(--ink-3); opacity:.82}
+  .card label{display:contents; cursor:pointer}
+  .card input{margin:2px 0 0; width:15px; height:15px; accent-color:var(--good); cursor:pointer}
+  .card .t{font-size:12.5px; line-height:1.4} .card.done .t{color:var(--ink-2)}
+  .card .meta{grid-column:2; display:flex; align-items:center; gap:8px; margin-top:6px}
+  .card .src{font-family:var(--mono); font-size:9.5px; color:var(--ink-3); padding:1px 6px; border:1px solid var(--line); border-radius:5px}
+  .card .src.plan{color:var(--accent-2); border-color:var(--accent-dim)}
+
+  .next{margin-top:12px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; border-left:3px solid var(--accent)}
+  .next h2{font-size:12px; font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin:0 0 8px}
+  .next p{margin:0; font-size:13.5px} .next .step{font-weight:600} .next .why{color:var(--ink-2); font-size:12.5px; margin-top:4px}
+  .next code{font-family:var(--mono); font-size:11.5px; background:var(--panel-2); padding:1px 6px; border-radius:4px}
+
+  .al-copy{border-style:dashed; background:var(--panel); border:1px dashed var(--line); border-radius:var(--radius); padding:18px; margin-top:12px}
+  .al-copy h2{font-size:12px; font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--ink-2); margin:0 0 2px}
+  .al-copy textarea{width:100%; min-height:56px; resize:vertical; background:var(--panel-2); color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:10px 12px; font-family:var(--sans); font-size:13px; margin:4px 0 12px}
+  .al-copy button{font-family:var(--mono); font-size:12.5px; font-weight:600; color:#0e1217; background:var(--accent); border:0; border-radius:9px; padding:10px 18px; cursor:pointer}
+  .al-copy button:hover{background:var(--accent-2)}
+  .al-copy output{font-family:var(--mono); font-size:12px; color:var(--good); margin-left:12px}
+  .al-copy .note-txt{font-size:12px; color:var(--ink-3); margin:0 0 6px}
+  .foot{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:22px; padding-top:16px; border-top:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--ink-3)}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+  @media (max-width:820px){.board{grid-template-columns:1fr}.lede{font-size:22px}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap"><div class="page">
+
+  <header class="top">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="18.5" stroke="var(--line-2)" stroke-width="1.5"/>
+        <g stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round">
+          <path d="M20 6.5 L26 15 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M33.5 20 L25 26 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M20 33.5 L14 25 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+          <path d="M6.5 20 L15 14 L20 20 Z" fill="var(--accent)" fill-opacity=".22"/>
+        </g>
+        <circle cx="20" cy="20" r="4.4" fill="var(--bg)" stroke="var(--accent)" stroke-width="2.2"/>
+      </svg>
+      <div><h1>ArtiLens</h1><div class="sub">/artilens:todos</div></div>
+    </div>
+    <div class="crumbs">
+      <span class="chip"><span class="dot" style="background:var(--accent)"></span> orbit-analytics</span>
+      <span class="chip">feat/streaming-metrics</span>
+      <span class="sep">·</span><span>transcript + PROGRESS.md</span>
+    </div>
+  </header>
+
+  <p class="eyebrow">Plan progress</p>
+  <h2 class="lede">5 of 10 done — the streaming feature is over the hump</h2>
+  <p class="lede-sub">Pulled from TodoWrite calls this session and the checkboxes in PROGRESS.md. Toggle a card and hit copy to hand the revised plan back to Claude Code.</p>
+
+  <section class="prog" data-artilens-state="progress">
+    <div class="progbar" role="img" aria-label="50% done, 40% to do, 10% skipped">
+      <span style="width:50%;background:var(--good)"></span>
+      <span style="width:40%;background:var(--todo)"></span>
+      <span style="width:10%;background:var(--ink-3)"></span>
+    </div>
+    <div class="counts">
+      <div class="c"><span class="sw" style="background:var(--good)"></span><b>5</b> <span class="lab">done</span></div>
+      <div class="c"><span class="sw" style="background:var(--todo)"></span><b>4</b> <span class="lab">to do</span></div>
+      <div class="c"><span class="sw" style="background:var(--ink-3)"></span><b>1</b> <span class="lab">skipped</span></div>
+    </div>
+  </section>
+
+  <div class="board" data-artilens-state="board">
+
+    <section class="col" data-column="done">
+      <h2><span class="dot" style="background:var(--good)"></span>Done <span class="n">5</span></h2>
+      <div class="cards">
+        <div class="card done" data-card="t-window"><label><input type="checkbox" checked data-change-op="toggle" data-target="t-window"><div><div class="t">Design the sliding-window aggregator strategy</div><div class="meta"><span class="src plan">plan</span></div></div></label></div>
+        <div class="card done" data-card="t-socket"><label><input type="checkbox" checked data-change-op="toggle" data-target="t-socket"><div><div class="t">Implement the WebSocket ingestion gateway</div><div class="meta"><span class="src">TodoWrite</span></div></div></label></div>
+        <div class="card done" data-card="t-tiles"><label><input type="checkbox" checked data-change-op="toggle" data-target="t-tiles"><div><div class="t">Add live metric tiles to the dashboard</div><div class="meta"><span class="src">TodoWrite</span></div></div></label></div>
+        <div class="card done" data-card="t-sse"><label><input type="checkbox" checked data-change-op="toggle" data-target="t-sse"><div><div class="t">Wire the /v2/metrics/stream SSE endpoint</div><div class="meta"><span class="src">TodoWrite</span></div></div></label></div>
+        <div class="card done" data-card="t-edge"><label><input type="checkbox" checked data-change-op="toggle" data-target="t-edge"><div><div class="t">Write aggregator edge-case tests</div><div class="meta"><span class="src">TodoWrite</span></div></div></label></div>
+      </div>
+    </section>
+
+    <section class="col" data-column="todo">
+      <h2><span class="dot" style="background:var(--todo)"></span>To do <span class="n">4</span></h2>
+      <div class="cards">
+        <div class="card todo" data-card="t-cover"><label><input type="checkbox" data-change-op="toggle" data-target="t-cover"><div><div class="t">Cover socket.ts reconnect path — 64.5% → target 85%</div><div class="meta"><span class="src plan">PROGRESS.md</span></div></div></label></div>
+        <div class="card todo" data-card="t-backp"><label><input type="checkbox" data-change-op="toggle" data-target="t-backp"><div><div class="t">Add a backpressure integration test at 10k msg/s</div><div class="meta"><span class="src">TodoWrite</span></div></div></label></div>
+        <div class="card todo" data-card="t-docs"><label><input type="checkbox" data-change-op="toggle" data-target="t-docs"><div><div class="t">Document the streaming architecture under docs/</div><div class="meta"><span class="src plan">PROGRESS.md</span></div></div></label></div>
+        <div class="card todo" data-card="t-load"><label><input type="checkbox" data-change-op="toggle" data-target="t-load"><div><div class="t">Load-test the pipeline before requesting review</div><div class="meta"><span class="src">TodoWrite</span></div></div></label></div>
+      </div>
+    </section>
+
+    <section class="col" data-column="skipped">
+      <h2><span class="dot" style="background:var(--ink-3)"></span>Skipped <span class="n">1</span></h2>
+      <div class="cards">
+        <div class="card skip" data-card="t-legacy"><label><input type="checkbox" data-change-op="toggle" data-target="t-legacy"><div><div class="t">Migrate the legacy polling endpoint</div><div class="meta"><span class="src plan">PROGRESS.md</span> <span class="src">deferred → next sprint</span></div></div></label></div>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="next" data-artilens-state="next">
+    <h2>◆ Suggested next safe step</h2>
+    <p class="step">Cover the socket.ts reconnect path.</p>
+    <p class="why">It's the lowest-risk unblock: coverage is the merge blocker, the file is stable, and the new <code>backpressure.test.ts</code> already sets up the harness you'd extend. Do this before the load test, which needs a clean pipeline.</p>
+  </section>
+
+  <section class="al-panel al-copy" data-artilens="copy-as-prompt">
+    <h2>Copy as prompt</h2>
+    <p class="note-txt">Check off what's really done, then copy — the protocol&nbsp;v1 payload captures each card's column and every checkbox so Claude Code picks up the exact board state.</p>
+    <textarea data-artilens-note placeholder="Optional note — e.g. 'start the next safe step and mark the docs task in progress'"></textarea>
+    <div><button data-copy-as-prompt>Copy state</button><output data-copy-status></output></div>
+    <script type="application/json" data-artilens-meta>{"artifact":"todos","url":null}</script>
+  </section>
+
+  <div class="foot"><span>ArtiLens · artilens.session.data/v1 · kind=todos</span><span>5 done · 4 to do · 1 skipped</span></div>
+
+</div></div>
+
+<script>
+document.querySelectorAll('[data-copy-as-prompt]').forEach(button => button.addEventListener('click', async () => {
+  const meta = JSON.parse(document.querySelector('[data-artilens-meta]')?.textContent || '{}');
+  const state = {};
+  document.querySelectorAll('[data-artilens-state]').forEach((node, index) => {
+    state[node.getAttribute('data-artilens-state') || index] = {
+      text: node.innerText.slice(0, 500),
+      checked: [...node.querySelectorAll('input[type=checkbox],input[type=radio]')].filter(i => i.checked).map(i => i.getAttribute('data-target') || i.value),
+      cards: [...node.querySelectorAll('[data-card]')].map(card => ({ id: card.getAttribute('data-card'), column: card.closest('[data-column]')?.getAttribute('data-column') }))
+    };
+  });
+  const changes = [...document.querySelectorAll('[data-change-op]')].map(node => ({ op: node.getAttribute('data-change-op'), target: node.getAttribute('data-target') || node.getAttribute('data-card'), value: node.checked ?? node.closest('[data-column]')?.getAttribute('data-column') })).filter(item => item.target);
+  const payload = { artilens: 1, artifact: meta.artifact, url: meta.url, captured_at: new Date().toISOString(), state, changes, note: document.querySelector('[data-artilens-note]')?.value || '' };
+  await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+  document.querySelector('[data-copy-status]').textContent = 'Copied protocol v1 JSON';
+}));
+</script>
