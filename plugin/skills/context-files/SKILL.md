@@ -1,5 +1,5 @@
 ---
-name: artilens:context-files
+name: context-files
 description: >-
   Inventory project context files — CLAUDE.md, AGENTS.md, rules, SKILL.md files, plans, and docs — with read-frequency from the current transcript. Use when the user asks what context is loaded, which files shaped the session, or before auditing stale or unused context files.
 allowed-tools: [Bash, Read, Agent]

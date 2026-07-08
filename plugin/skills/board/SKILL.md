@@ -1,5 +1,5 @@
 ---
-name: artilens:board
+name: board
 description: >-
   Create a draggable planning, kanban, roadmap, or backlog board artifact with copy-as-prompt feedback. Use for task ordering, project boards, sprint planning, prioritization, or moving cards between columns.
 allowed-tools: [Bash, Read, Agent]

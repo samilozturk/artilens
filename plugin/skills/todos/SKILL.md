@@ -1,5 +1,5 @@
 ---
-name: artilens:todos
+name: todos
 description: >-
   Visualize todos, plan checklists, progress, blockers, and next actions from the current transcript and project plan files. Use when the user asks for progress, task status, blockers, roadmap state, or the next safe task.
 allowed-tools: [Bash, Read, Agent]

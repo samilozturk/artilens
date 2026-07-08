@@ -1,5 +1,5 @@
 ---
-name: artilens:lens
+name: lens
 description: >-
   Visualize the current Claude Code session's context health, token pressure, hot files, and compact/clear/handoff recommendation. Use when the user asks to see session context, context window, context usage, session health, handoff readiness, or whether to compact.
 allowed-tools: [Bash, Read, Agent]

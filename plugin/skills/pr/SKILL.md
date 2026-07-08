@@ -1,5 +1,5 @@
 ---
-name: artilens:pr
+name: pr
 description: >-
   Build an annotated pull-request or branch walkthrough artifact from real git data. Use before review, when explaining a branch, preparing a PR, summarizing commits, or showing changed files and risks.
 allowed-tools: [Bash, Read, Agent]

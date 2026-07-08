@@ -1,5 +1,5 @@
 ---
-name: artilens:git
+name: git
 description: >-
   Visualize real git status, changed files, a commit, or a remote diff as an artifact. Use when the user asks what changed, wants a repo/change overview, needs git status explained, or asks to inspect a commit or diff.
 allowed-tools: [Bash, Read, Agent]

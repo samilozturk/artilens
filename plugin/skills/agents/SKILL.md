@@ -1,5 +1,5 @@
 ---
-name: artilens:agents
+name: agents
 description: >-
   Visualize subagent, Agent tool, and delegated task activity from the current Claude Code session. Use when work was delegated or the user asks what agents/subagents did, what ran in the background, or how tasks were coordinated.
 allowed-tools: [Bash, Read, Agent]

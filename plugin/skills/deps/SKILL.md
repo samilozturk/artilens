@@ -1,5 +1,5 @@
 ---
-name: artilens:deps
+name: deps
 description: >-
   Create a dependency review artifact from real package metadata. Use when checking dependencies, package.json, outdated or deprecated packages, license risk, upgrade order, dependency health, or version cleanup.
 allowed-tools: [Bash, Read, Agent]

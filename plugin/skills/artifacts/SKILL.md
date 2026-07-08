@@ -1,5 +1,5 @@
 ---
-name: artilens:artifacts
+name: artifacts
 description: >-
   List, find, inspect, diff, resume, or update this project's locally registered artifacts. Use when the user references a previous artifact, asks what artifacts exist, wants artifact history, or wants to continue from an artifact.
 allowed-tools: [Bash, Read, Artifact]

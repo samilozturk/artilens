@@ -1,5 +1,5 @@
 ---
-name: artilens:compare
+name: compare
 description: >-
   Create an option comparison artifact with tradeoffs and a recommendation. Use when the user wants to compare approaches, architectures, libraries, plans, implementation choices, pros/cons, or decision options.
 allowed-tools: [Bash, Read, Agent]

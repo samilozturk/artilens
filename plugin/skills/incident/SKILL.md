@@ -1,5 +1,5 @@
 ---
-name: artilens:incident
+name: incident
 description: >-
   Create an incident, regression, bug investigation, or debugging artifact with timeline, metrics, and hypothesis table. Use for outages, postmortems, root-cause analysis, production issues, flaky failures, or debugging narratives.
 allowed-tools: [Bash, Read, Agent]

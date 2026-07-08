@@ -1,5 +1,5 @@
 ---
-name: artilens:commands
+name: commands
 description: >-
   Catalog available slash commands, ArtiLens skills, plugins, and contextual recommendations. Use when the user asks what commands/tools/skills are available, what ArtiLens can do, or what to run next.
 allowed-tools: [Bash, Read, Agent]

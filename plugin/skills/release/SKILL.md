@@ -1,5 +1,5 @@
 ---
-name: artilens:release
+name: release
 description: >-
   Create a release checklist, changelog, or ship-readiness artifact from real git history. Use before tagging, cutting a release, shipping a version, preparing release notes, or reviewing recent commits.
 allowed-tools: [Bash, Read, Agent]

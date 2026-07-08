@@ -1,5 +1,5 @@
 ---
-name: artilens:docs-health
+name: docs-health
 description: >-
   Analyze CLAUDE.md, AGENTS.md, rules, skills, plans, and docs for stale, broken, or conflicting context guidance. Use when docs may be outdated, contradictory, stale, misleading, or need a health check.
 allowed-tools: [Bash, Read, Agent]

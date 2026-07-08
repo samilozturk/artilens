@@ -1,5 +1,5 @@
 ---
-name: artilens:usage
+name: usage
 description: >-
   Visualize the current Claude Code session's real usage: cost, model token usage, cache tokens, line-change estimate, and MCP/skill share. Use when the user asks for usage, cost, spend, tokens, model usage, session stats, or "/usage"-style data.
 allowed-tools: [Bash, Read, Agent]
