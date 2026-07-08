@@ -9,9 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="demo-artifacts/promo-video/artilens-promo-16x9.mp4">
-    <img src="demo-artifacts/promo-video/artilens-promo-16x9.gif" width="900" alt="ArtiLens promo video preview" />
-  </a>
+  <img src="demo-artifacts/promo-video/artilens-promo-16x9.gif" width="720" alt="ArtiLens promo video preview" />
 </p>
 
 ArtiLens is a Claude Code companion toolkit for turning session context, repo state,
