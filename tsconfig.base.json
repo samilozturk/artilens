@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@artilens/core": ["packages/core/src/index.ts"],
+      "@artilens/guard": ["packages/guard/src/index.ts"],
+      "@artilens/lens": ["packages/lens/src/index.ts"],
+      "@artilens/git-viz": ["packages/git-viz/src/index.ts"],
+      "@artilens/session-viz": ["packages/session-viz/src/index.ts"],
+      "@artilens/docs-health": ["packages/docs-health/src/index.ts"]
+    }
+  }
+}

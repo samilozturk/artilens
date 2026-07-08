@@ -1,0 +1,22 @@
+{
+  "name": "artilens",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "artilens": "./dist/src/index.js"
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "dependencies": {
+    "@artilens/core": "workspace:*",
+    "@artilens/lens": "workspace:*",
+    "@artilens/git-viz": "workspace:*",
+    "@artilens/session-viz": "workspace:*",
+    "@artilens/docs-health": "workspace:*",
+    "commander": "^12.1.0"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run"
+  }
+}

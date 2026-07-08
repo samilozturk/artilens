@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/guard" },
+    { "path": "./packages/lens" },
+    { "path": "./packages/git-viz" },
+    { "path": "./packages/session-viz" },
+    { "path": "./packages/docs-health" },
+    { "path": "./packages/cli" }
+  ]
+}

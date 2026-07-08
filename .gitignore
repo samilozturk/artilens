@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.turbo/
+coverage/
+.claude/artilens/*.log
+.claude/artilens/live.json
+.claude/artilens/*.html
+.claude/artilens/*.json
+*.tsbuildinfo
+
+.playwright-mcp/
+.superpowers/

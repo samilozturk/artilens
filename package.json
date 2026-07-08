@@ -1,0 +1,31 @@
+{
+  "name": "artilens-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -b packages/core packages/lens packages/git-viz packages/session-viz packages/docs-health packages/cli",
+    "build:plugin-bin": "node scripts/build-plugin-bin.mjs",
+    "check": "pnpm build && pnpm build:plugin-bin && pnpm test",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "cli": "tsx packages/cli/src/index.ts",
+    "lint:skills": "tsx packages/cli/src/index.ts doctor --skills"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "esbuild": "^0.28.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "parse5": "^7.2.1",
+    "yaml": "^2.6.1"
+  }
+}
