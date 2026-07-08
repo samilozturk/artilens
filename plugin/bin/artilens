@@ -11948,7 +11948,7 @@ function git4(args, cwd) {
 
 // packages/cli/dist/src/index.js
 var program2 = new Command();
-program2.name("artilens").description("Claude Code Artifacts companion toolkit").version("0.1.0");
+program2.name("artilens").description("Claude Code Artifacts companion toolkit").version("0.1.1");
 program2.command("lens").option("--session <path>", "transcript path").option("--latest", "use latest transcript").requiredOption("--data <file>", "write scrubbed data JSON for native-artifact authoring").action(async (options) => {
   const { report, dataPath } = await writeLensData({ session: options.session, latest: options.latest, projectDir: process.cwd(), dataPath: options.data });
   printQuiet(dataPath, `${Math.round(report.healthScore)}/100, ${report.usedPercentage}% context, recommendation ${report.decision.action}`);
@@ -12146,21 +12146,23 @@ async function initProject(projectDir, options) {
   const settings = await pathExists(settingsPath) ? JSON.parse(await readText(settingsPath)) : {};
   settings.hooks ??= {};
   if (options.optionalHooks) {
+    const lensThresholdCommand = pluginScriptCommand("lens-threshold-hook.mjs", ["hook", "lens-threshold"]);
+    const eventLogCommand = pluginScriptCommand("event-log-hook.mjs", ["hook", "event-log"]);
     settings.hooks.Stop = mergeHook(settings.hooks.Stop, {
       matcher: "*",
-      hooks: [{ type: "command", command: "artilens hook lens-threshold" }]
+      hooks: [{ type: "command", command: lensThresholdCommand }]
     });
     settings.hooks.SubagentStart = mergeHook(settings.hooks.SubagentStart, {
       matcher: "*",
-      hooks: [{ type: "command", command: "artilens hook event-log" }]
+      hooks: [{ type: "command", command: eventLogCommand }]
     });
     settings.hooks.SubagentStop = mergeHook(settings.hooks.SubagentStop, {
       matcher: "*",
-      hooks: [{ type: "command", command: "artilens hook event-log" }]
+      hooks: [{ type: "command", command: eventLogCommand }]
     });
     settings.hooks.InstructionsLoaded = mergeHook(settings.hooks.InstructionsLoaded, {
       matcher: "*",
-      hooks: [{ type: "command", command: "artilens hook event-log" }]
+      hooks: [{ type: "command", command: eventLogCommand }]
     });
   }
   await writeText(settingsPath, `${stableJson(settings)}
@@ -12178,6 +12180,19 @@ function mergeHook(existing, hookConfig) {
   const list = existing ?? [];
   const serialized = JSON.stringify(hookConfig);
   return list.some((item) => JSON.stringify(item) === serialized) ? list : [...list, hookConfig];
+}
+function pluginScriptCommand(scriptName, fallbackArgs) {
+  const pluginRoot = findRuntimePluginRoot();
+  if (!pluginRoot)
+    return `artilens ${fallbackArgs.join(" ")}`;
+  return `node "${import_node_path10.default.join(pluginRoot, "scripts", scriptName).replace(/\\/g, "/")}"`;
+}
+function findRuntimePluginRoot() {
+  const candidates = [
+    process.env.CLAUDE_PLUGIN_ROOT,
+    process.argv[1] ? import_node_path10.default.resolve(import_node_path10.default.dirname(process.argv[1]), "..") : void 0
+  ].filter((value) => Boolean(value));
+  return candidates.find((candidate) => import_node_fs7.default.existsSync(import_node_path10.default.join(candidate, "scripts", "run-artilens.mjs")));
 }
 function extractUrl(value) {
   const text = typeof value === "string" ? value : JSON.stringify(value ?? {});

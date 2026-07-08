@@ -7,10 +7,10 @@ allowed-tools: [Bash, Read, Agent]
 
 # Usage Lens
 
-1. Run `artilens usage --latest --data .claude/artilens/usage.data.json`.
+1. Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/run-artilens.mjs" usage --latest --data .claude/artilens/usage.data.json`.
 2. Relay the CLI's summary line to the user verbatim (total cost, estimate flag).
 3. Start a background subagent with the Agent tool: `subagent_type: general-purpose`, `model: sonnet`, `run_in_background: true`. Prompt template:
-   "Read `<absolute path to usage.data.json>` and `<this skill's base dir>/../../references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
+   "Read `<absolute path to usage.data.json>` and `${CLAUDE_PLUGIN_ROOT}/references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
    Page plan: total cost up front (flag if estimated); per-model token/cost breakdown; MCP-server and skill usage share; lines-added/removed summary; copy-as-prompt.
    All visual design decisions are yours."
 4. Continue your own task. When the subagent finishes, relay the artifact URL to the user.

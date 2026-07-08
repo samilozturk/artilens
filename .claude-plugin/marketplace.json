@@ -1,14 +1,25 @@
 {
   "name": "artilens-marketplace",
+  "description": "Public marketplace for the ArtiLens Claude Code Artifacts companion plugin.",
   "owner": {
-    "name": "ArtiLens"
+    "name": "ArtiLens",
+    "email": "bsamilozturk@gmail.com"
   },
   "plugins": [
     {
       "name": "artilens",
-      "description": "Native artifact skills for Claude Code context, usage, registry, git, coverage, session, docs, and workflow visualizations.",
+      "description": "Claude Code Artifacts companion toolkit: native artifact skills for context, usage, registry, git, coverage, session, docs, and workflow visualizations.",
       "source": "./plugin",
-      "version": "0.1.1"
+      "version": "0.1.1",
+      "author": {
+        "name": "ArtiLens",
+        "email": "bsamilozturk@gmail.com"
+      },
+      "homepage": "https://github.com/samilozturk/artilens",
+      "repository": "https://github.com/samilozturk/artilens",
+      "license": "MIT",
+      "keywords": ["artifacts", "context", "visualization", "claude-code", "git", "session"],
+      "category": "productivity"
     }
   ]
 }

@@ -9,7 +9,7 @@ allowed-tools: [Bash, Read, Agent]
 
 1. Run `git log --oneline -20` yourself to draft a changelog. There is no CLI data command for this skill.
 2. Start a background subagent with the Agent tool: `subagent_type: general-purpose`, `model: sonnet`, `run_in_background: true`. Prompt template:
-   "Read `<this skill's base dir>/../../references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
+   "Read `${CLAUDE_PLUGIN_ROOT}/references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
    Data: <the `git log --oneline -20` output, inline>.
    Page plan: release checklist; changelog draft from the commit list; copy-as-prompt.
    All visual design decisions are yours."

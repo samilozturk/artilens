@@ -7,10 +7,10 @@ allowed-tools: [Bash, Read, Agent]
 
 # Context Files Inventory
 
-1. Run `artilens session context-files --data .claude/artilens/context-files.data.json`.
+1. Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/run-artilens.mjs" session context-files --data .claude/artilens/context-files.data.json`.
 2. Relay the CLI's summary line to the user verbatim.
 3. Start a background subagent with the Agent tool: `subagent_type: general-purpose`, `model: sonnet`, `run_in_background: true`. Prompt template:
-   "Read `<absolute path to context-files.data.json>` and `<this skill's base dir>/../../references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
+   "Read `<absolute path to context-files.data.json>` and `${CLAUDE_PLUGIN_ROOT}/references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
    Page plan: inventory of loaded context files; read-frequency per file; highlight stale-looking candidates.
    All visual design decisions are yours."
 4. Continue your own task. When the subagent finishes, relay the artifact URL to the user.

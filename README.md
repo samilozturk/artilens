@@ -8,15 +8,25 @@
   <strong><em>Scrubbed data in. Native artifacts out. Keep them in your repo.</em></strong>
 </p>
 
-<p align="center">
-  <img src="demo-artifacts/promo-video/artilens-promo-16x9.gif" width="720" alt="ArtiLens promo video preview" />
-</p>
+![ArtiLens promo — see your Claude Code work as living artifacts](demo-artifacts/promo-video/artilens-promo-16x9.mp4){width=720}
 
 ArtiLens is a Claude Code companion toolkit for turning session context, repo state,
 review data, docs health, todos, and workflow notes into polished Claude Code
 Artifacts.
 
 ## Quick Install
+
+From Claude Code, add the public GitHub marketplace and install the plugin:
+
+```text
+/plugin marketplace add samilozturk/artilens
+/plugin install artilens@artilens-marketplace
+```
+
+The plugin ships its own bundled CLI and calls it through the installed plugin
+directory. You do not need to install an `artilens` npm package.
+
+For local plugin development from a checkout, use:
 
 ```bash
 claude plugin marketplace add ./
@@ -135,8 +145,10 @@ flowchart LR
   G --> H[".claude/artifacts"]
 ```
 
-The CLI is intentionally boring: collect, scrub, summarize, write JSON. Visual design
-belongs to the native `artifact-design` skill, guided by
+The CLI is intentionally boring: collect, scrub, summarize, write JSON. Public
+plugin installs use the bundled CLI in `plugin/bin/artilens` through
+`plugin/scripts/run-artilens.mjs`, so no global npm package is required. Visual
+design belongs to the native `artifact-design` skill, guided by
 `plugin/references/artifact-authoring.md`.
 
 The runtime pattern is:

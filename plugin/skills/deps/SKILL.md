@@ -9,7 +9,7 @@ allowed-tools: [Bash, Read, Agent]
 
 1. Read `package.json` (and `npm ls --json` if deeper version data is needed) yourself to build the dependency table. There is no CLI data command for this skill.
 2. Start a background subagent with the Agent tool: `subagent_type: general-purpose`, `model: sonnet`, `run_in_background: true`. Prompt template:
-   "Read `<this skill's base dir>/../../references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
+   "Read `${CLAUDE_PLUGIN_ROOT}/references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
    Data: <dependency table gathered above, inline>.
    Page plan: dependency table from package.json; risk column (outdated/deprecated/license); suggested upgrade order; copy-as-prompt.
    All visual design decisions are yours."

@@ -9,7 +9,7 @@ allowed-tools: [Bash, Read, Agent]
 
 1. Gather the column/card data: ask the user for columns and cards, or infer them from the conversation context (backlog items, task list, etc.). There is no CLI command for this skill.
 2. Start a background subagent with the Agent tool: `subagent_type: general-purpose`, `model: sonnet`, `run_in_background: true`. Prompt template:
-   "Read `<this skill's base dir>/../../references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
+   "Read `${CLAUDE_PLUGIN_ROOT}/references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
    Data: <columns and cards gathered above, inline>.
    Page plan: columns (Now/Next/Later, or the user's given columns) with cards; drag-and-drop affordance; copy-as-prompt using the `data-card`/`data-column` move contract.
    All visual design decisions are yours."

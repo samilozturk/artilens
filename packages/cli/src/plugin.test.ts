@@ -5,10 +5,18 @@ import { describe, expect, it } from "vitest";
 describe("plugin package", () => {
   it("declares skills, hooks, and no MCP server", async () => {
     const manifest = JSON.parse(await fs.promises.readFile(path.resolve("plugin", ".claude-plugin", "plugin.json"), "utf8"));
+    const marketplace = JSON.parse(await fs.promises.readFile(path.resolve(".claude-plugin", "marketplace.json"), "utf8"));
+    const cliPackage = JSON.parse(await fs.promises.readFile(path.resolve("packages", "cli", "package.json"), "utf8"));
     expect(manifest.name).toBe("artilens");
+    expect(manifest.version).toBe(cliPackage.version);
+    expect(marketplace.plugins[0].version).toBe(manifest.version);
+    expect(marketplace.plugins[0].description).toBe(manifest.description);
+    expect(manifest.repository).toBe("https://github.com/samilozturk/artilens");
+    expect(marketplace.plugins[0].repository).toBe(manifest.repository);
     expect(JSON.stringify(manifest).toLowerCase()).not.toContain("mcpservers");
     const hooks = JSON.parse(await fs.promises.readFile(path.resolve("plugin", "hooks", "hooks.json"), "utf8"));
     expect(hooks.hooks.PostToolUse[0].matcher).toBe("Artifact");
+    expect(JSON.stringify(hooks)).toContain("${CLAUDE_PLUGIN_ROOT}/scripts/registry-hook.mjs");
   });
 
   it("keeps skill frontmatter complete and bodies thin", async () => {
@@ -23,6 +31,11 @@ describe("plugin package", () => {
       expect(frontmatter, file).toMatch(/^description:/m);
       expect(frontmatter, file).toMatch(/^allowed-tools:/m);
       expect(body.split(/\r?\n/).length, file).toBeLessThanOrEqual(60);
+      expect(body, file).not.toContain("<this skill's base dir>");
+      expect(body, file).not.toMatch(/`artilens\s+(lens|usage|git|session|docs-health|artifacts)\b/);
+      if (body.match(/\b(lens|usage|git|session|docs-health|artifacts)\b/) && body.includes("--data")) {
+        expect(body, file).toContain('node "${CLAUDE_PLUGIN_ROOT}/scripts/run-artilens.mjs"');
+      }
     }
   });
 });

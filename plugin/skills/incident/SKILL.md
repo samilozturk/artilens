@@ -9,7 +9,7 @@ allowed-tools: [Bash, Read, Agent]
 
 1. Gather the incident data: timeline events, hypotheses (with status), and metric summaries from the conversation context or the user directly. There is no CLI command for this skill.
 2. Start a background subagent with the Agent tool: `subagent_type: general-purpose`, `model: sonnet`, `run_in_background: true`. Prompt template:
-   "Read `<this skill's base dir>/../../references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
+   "Read `${CLAUDE_PLUGIN_ROOT}/references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
    Data: <timeline, hypotheses, metrics gathered above, inline>.
    Page plan: timeline; hypothesis table with a status column; metric summaries; copy-as-prompt.
    All visual design decisions are yours."

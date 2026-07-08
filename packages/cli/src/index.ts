@@ -24,7 +24,7 @@ import { analyzeDocsHealth, writeDocsHealthData } from "@artilens/docs-health";
 
 const program = new Command();
 
-program.name("artilens").description("Claude Code Artifacts companion toolkit").version("0.1.0");
+program.name("artilens").description("Claude Code Artifacts companion toolkit").version("0.1.1");
 
 program
   .command("lens")
@@ -254,21 +254,23 @@ async function initProject(projectDir: string, options: { optionalHooks?: boolea
   const settings = (await pathExists(settingsPath)) ? JSON.parse(await readText(settingsPath)) : {};
   settings.hooks ??= {};
   if (options.optionalHooks) {
+    const lensThresholdCommand = pluginScriptCommand("lens-threshold-hook.mjs", ["hook", "lens-threshold"]);
+    const eventLogCommand = pluginScriptCommand("event-log-hook.mjs", ["hook", "event-log"]);
     settings.hooks.Stop = mergeHook(settings.hooks.Stop, {
       matcher: "*",
-      hooks: [{ type: "command", command: "artilens hook lens-threshold" }]
+      hooks: [{ type: "command", command: lensThresholdCommand }]
     });
     settings.hooks.SubagentStart = mergeHook(settings.hooks.SubagentStart, {
       matcher: "*",
-      hooks: [{ type: "command", command: "artilens hook event-log" }]
+      hooks: [{ type: "command", command: eventLogCommand }]
     });
     settings.hooks.SubagentStop = mergeHook(settings.hooks.SubagentStop, {
       matcher: "*",
-      hooks: [{ type: "command", command: "artilens hook event-log" }]
+      hooks: [{ type: "command", command: eventLogCommand }]
     });
     settings.hooks.InstructionsLoaded = mergeHook(settings.hooks.InstructionsLoaded, {
       matcher: "*",
-      hooks: [{ type: "command", command: "artilens hook event-log" }]
+      hooks: [{ type: "command", command: eventLogCommand }]
     });
   }
   await writeText(settingsPath, `${stableJson(settings)}\n`);
@@ -283,6 +285,21 @@ function mergeHook(existing: any[] | undefined, hookConfig: any): any[] {
   const list = existing ?? [];
   const serialized = JSON.stringify(hookConfig);
   return list.some((item) => JSON.stringify(item) === serialized) ? list : [...list, hookConfig];
+}
+
+function pluginScriptCommand(scriptName: string, fallbackArgs: string[]): string {
+  const pluginRoot = findRuntimePluginRoot();
+  if (!pluginRoot) return `artilens ${fallbackArgs.join(" ")}`;
+  return `node "${path.join(pluginRoot, "scripts", scriptName).replace(/\\/g, "/")}"`;
+}
+
+function findRuntimePluginRoot(): string | undefined {
+  const candidates = [
+    process.env.CLAUDE_PLUGIN_ROOT,
+    process.argv[1] ? path.resolve(path.dirname(process.argv[1]), "..") : undefined
+  ].filter((value): value is string => Boolean(value));
+
+  return candidates.find((candidate) => fs.existsSync(path.join(candidate, "scripts", "run-artilens.mjs")));
 }
 
 function extractUrl(value: unknown): string | undefined {

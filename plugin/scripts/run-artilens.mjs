@@ -50,3 +50,7 @@ export function readStdin() {
     process.stdin.on("error", reject);
   });
 }
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  pipeResult(runArtilens(process.argv.slice(2)));
+}

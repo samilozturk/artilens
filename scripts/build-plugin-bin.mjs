@@ -1,11 +1,8 @@
 #!/usr/bin/env node
 // Bundles the compiled CLI (packages/cli/dist) plus all @artilens/* workspace
-// packages into one self-contained file inside plugin/bin/. Claude Code adds a
-// plugin's bin/ directory to the Bash tool's PATH while the plugin is enabled,
-// so this is what lets skills invoke a bare `artilens` command after the
-// plugin is installed from a marketplace, without publishing to npm and
-// without the plugin reaching outside its own directory (which the plugin
-// cache does not preserve).
+// packages into one self-contained file inside plugin/bin/. Skills and hooks
+// launch it through plugin/scripts/run-artilens.mjs, so marketplace installs do
+// not need a global npm package and do not reach outside the plugin cache.
 import { build } from "esbuild";
 import fs from "node:fs";
 import path from "node:path";

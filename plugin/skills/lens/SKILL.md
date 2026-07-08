@@ -7,10 +7,10 @@ allowed-tools: [Bash, Read, Agent]
 
 # Context Lens
 
-1. Run `artilens lens --latest --data .claude/artilens/lens.data.json`.
+1. Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/run-artilens.mjs" lens --latest --data .claude/artilens/lens.data.json`.
 2. Relay the CLI's summary line to the user verbatim (health score, context %, recommendation).
 3. Start a background subagent with the Agent tool: `subagent_type: general-purpose`, `model: sonnet`, `run_in_background: true`. Prompt template:
-   "Read `<absolute path to lens.data.json>` and `<this skill's base dir>/../../references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
+   "Read `<absolute path to lens.data.json>` and `${CLAUDE_PLUGIN_ROOT}/references/artifact-authoring.md`. Load the artifact-design skill, then author and publish an artifact with the Artifact tool.
    Page plan: health score + context % + one-line recommendation (compact/clear/continue) up top; the 10x10 context-window grid with a category legend; token-breakdown; tool-usage and hot-files tables; the handoff block; copy-as-prompt.
    All visual design decisions are yours."
 4. Continue your own task. When the subagent finishes, relay the artifact URL to the user.
