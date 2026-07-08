@@ -1,0 +1,12 @@
+{
+  "name": "artilens",
+  "displayName": "ArtiLens",
+  "version": "0.1.1",
+  "description": "Claude Code Artifacts companion toolkit: native artifact skills for context, usage, registry, git, coverage, session, docs, and workflow visualizations.",
+  "author": {
+    "name": "ArtiLens"
+  },
+  "license": "MIT",
+  "keywords": ["artifacts", "context", "visualization"],
+  "skills": "./skills"
+}

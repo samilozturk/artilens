@@ -1,0 +1,14 @@
+{
+  "name": "artilens-marketplace",
+  "owner": {
+    "name": "ArtiLens"
+  },
+  "plugins": [
+    {
+      "name": "artilens",
+      "description": "Native artifact skills for Claude Code context, usage, registry, git, coverage, session, docs, and workflow visualizations.",
+      "source": "./plugin",
+      "version": "0.1.0"
+    }
+  ]
+}
