@@ -8,7 +8,9 @@
   <strong><em>Scrubbed data in. Native artifacts out. Keep them in your repo.</em></strong>
 </p>
 
-![ArtiLens promo — see your Claude Code work as living artifacts](demo-artifacts/promo-video/artilens-promo-16x9.mp4){width=720}
+<p align="center">
+  <img src="demo-artifacts/promo-video/artilens-promo-16x9.gif" width="720" alt="ArtiLens promo - see your Claude Code work as living artifacts" />
+</p>
 
 ArtiLens is a Claude Code companion toolkit for turning session context, repo state,
 review data, docs health, todos, and workflow notes into polished Claude Code
